@@ -3,7 +3,7 @@ import appConfig from "../config/appConfig";
 import { endpointsUrl } from "../config/endpointsUrl";
 import * as Quotes from "../types/quotes";
 
-export const getRandomQuote = () => {
+export const getRandomQuote = async () => {
 	const url = String(import.meta.env.VITE_NINJAS_API_URL || "");
 	const apiKey = String(import.meta.env.VITE_NINJAS_API_KEY || "");
 
@@ -11,11 +11,21 @@ export const getRandomQuote = () => {
 		return Promise.reject("Misconfiguration");
 	}
 
-	return GET<{ quote: string; author: string }>(url, {
-		headers: {
-			"X-Api-Key": apiKey,
-		},
-	});
+	try {
+		const data = await GET<Array<{ quote: string; author: string }>>(url, {
+			headers: {
+				"X-Api-Key": apiKey,
+			},
+		});
+
+		if (!Array.isArray(data)) {
+			throw new Error("Unknown data structure");
+		}
+
+		return Promise.resolve(data[0]);
+	} catch (error) {
+		return Promise.reject(error);
+	}
 };
 
 export const getQuotes = ({ page }: Quotes.Filters) => {

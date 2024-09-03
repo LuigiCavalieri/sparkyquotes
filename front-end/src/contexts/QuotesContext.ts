@@ -1,29 +1,24 @@
 import { createContext } from "react";
 import * as Quotes from "../types/quotes";
 
-interface QueryState {
+export interface QuotesQueryState {
+	isRefetching: boolean;
 	isLoading: boolean;
 	isError: boolean;
 }
 
 export interface SaveQuoteFunctionOptions {
-	onError?: () => void;
-	onSuccess?: () => void;
+	key: string;
 }
 
 export interface QuotesContextInterface {
 	quotes: Quotes.Item[];
-	queryState: QueryState & { isRefetching: boolean };
-	saveMutationState: QueryState;
+	queryState: QuotesQueryState;
 	pagination: {
 		currentPage: number;
 		numOfItems: number;
 	};
 	refreshQuotes: (filters: Quotes.Filters) => void;
-	saveQuote: (
-		newQuote: Quotes.ItemWithoutServerGenFields,
-		options?: SaveQuoteFunctionOptions
-	) => void;
 }
 
 export const QuotesContext = createContext<QuotesContextInterface>({
@@ -33,14 +28,9 @@ export const QuotesContext = createContext<QuotesContextInterface>({
 		isRefetching: false,
 		isError: false,
 	},
-	saveMutationState: {
-		isLoading: false,
-		isError: false,
-	},
 	pagination: {
 		currentPage: 1,
 		numOfItems: 0,
 	},
 	refreshQuotes: () => undefined,
-	saveQuote: () => undefined,
 });

@@ -1,6 +1,6 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState, FormEvent } from "react";
 import appConfig from "../../config/appConfig";
-import useQuotes from "../../hooks/quotes";
+import { useSaveQuote } from "../../hooks/quotes";
 import * as Quotes from "../../types/quotes";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import TextField from "../TextField/TextField";
@@ -8,26 +8,32 @@ import Card from "../Card/Card";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function QuoteForm() {
+	const formRef = useRef<HTMLFormElement | null>(null);
 	const [submitEnabled, setSubmitEnabled] = useState(false);
 
-	const { saveMutationState, saveQuote } = useQuotes();
+	const { isError, isLoading, mutate } = useSaveQuote({
+		onSuccess: () => {
+			if (formRef.current) {
+				formRef.current.reset();
+			}
+		},
+		onError: () => {
+			setSubmitEnabled(true);
+		},
+	});
 
-	const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const formElement = event.target as HTMLFormElement;
-		const formData = new FormData(formElement);
+		if (!formRef.current) {
+			return;
+		}
+
+		const formData = new FormData(formRef.current);
 		const fieldsValue = Object.fromEntries(formData.entries()) as Quotes.ItemWithoutServerGenFields;
 
 		setSubmitEnabled(false);
-		saveQuote(fieldsValue, {
-			onSuccess: () => {
-				formElement.reset();
-			},
-			onError: () => {
-				setSubmitEnabled(true);
-			},
-		});
+		mutate(fieldsValue);
 	};
 
 	const handleOnChangeTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -38,17 +44,22 @@ export default function QuoteForm() {
 
 	return (
 		<Card>
-			{saveMutationState.isError && (
+			{isError && (
 				<ErrorMessage canBeDismissed className="mt-2">
 					Save failed. Please try again.
 				</ErrorMessage>
 			)}
-			<form data-testid="quote-form" className="grid gap-5 py-2" onSubmit={handleOnSubmit}>
+			<form
+				data-testid="quote-form"
+				className="grid gap-5 py-2"
+				ref={formRef}
+				onSubmit={handleOnSubmit}
+			>
 				<textarea
 					required
 					className="leading-6 outline-none p-2 border rounded-sm border-slate-300 h-40 resize-none disabled:text-slate-400 focus:border-sky-500"
 					name="content"
-					disabled={saveMutationState.isLoading}
+					disabled={isLoading}
 					placeholder="Type in the quote you want to save"
 					onChange={handleOnChangeTextarea}
 				/>
@@ -57,14 +68,11 @@ export default function QuoteForm() {
 					name="author"
 					placeholder="by 'anonymous'"
 					validate={false}
-					disabled={saveMutationState.isLoading}
+					disabled={isLoading}
 					maxLength={appConfig.authorNameMaxLength}
 				/>
-				<SubmitButton
-					disabled={!submitEnabled || saveMutationState.isLoading}
-					className="justify-self-end w-1/4"
-				>
-					{saveMutationState.isLoading ? "Saving..." : "Save"}
+				<SubmitButton disabled={!submitEnabled || isLoading} className="justify-self-end w-1/4">
+					{isLoading ? "Saving..." : "Save"}
 				</SubmitButton>
 			</form>
 		</Card>

@@ -15,7 +15,7 @@ export default function QuotesListItem({ quote, itemIndex, className }: QuotesLi
 			)}
 		>
 			<figure className="px-4 py-1">
-				<blockquote>{quote.content?.trim()}</blockquote>
+				<blockquote>"{quote.content?.trim()}"</blockquote>
 				<figcaption className="text-right text-sm font-medium mt-2 before:content-['by'] before:text-gray-400 before:mr-1 before:font-normal">
 					{author}
 				</figcaption>

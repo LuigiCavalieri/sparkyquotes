@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import useQuotes from "../../hooks/quotes";
+import { useQuotes } from "../../hooks/quotes";
 import Card from "../Card/Card";
 import QuotesListItem from "../QuotesListItem/QuotesListItem";
 import PaginationMenu from "../PaginationMenu/PaginationMenu";

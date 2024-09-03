@@ -21,7 +21,7 @@ export default function ErrorMessage({
 				className
 			)}
 		>
-			<div className="leading-9" data-testid={testid}>
+			<div className="leading-8 text-sm" data-testid={testid}>
 				{children}
 			</div>
 			{canBeDismissed && (
