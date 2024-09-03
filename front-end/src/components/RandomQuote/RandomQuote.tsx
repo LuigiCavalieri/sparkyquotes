@@ -4,12 +4,14 @@ import { useQuery } from "react-query";
 import { useSaveQuote } from "../../hooks/quotes";
 import classNames from "classnames";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { useState } from "react";
 
 const serviceUnavailable = !(
 	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
 );
 
 export default function RandomQuote() {
+	const [hiddenOnMobile, setHiddenOnMobile] = useState(true);
 	const { isError: isMutationError, isLoading: isMutationLoading, mutate } = useSaveQuote();
 
 	const {
@@ -58,22 +60,39 @@ export default function RandomQuote() {
 				</p>
 			) : (
 				<>
-					<div className="mb-4 flex justify-between items-center">
-						<h3 className="font-semibold">
+					<div className="flex justify-between items-start gap-4">
+						<h3 className="font-semibold text-sm sm:text-normal">
 							You may like this quote by <em className="text-sky-900">{data.author}</em>
 						</h3>
 						<button
 							type="button"
 							disabled={isMutationLoading}
 							onClick={handleOnClickSave}
-							className={classNames("text-sky-500 text-sm hover:underline disabled:no-underline", {
-								"opacity-50": isMutationLoading,
-							})}
+							className={classNames(
+								"text-sky-500 text-sm hover:underline disabled:no-underline sm:leading-7",
+								{ "opacity-50": isMutationLoading }
+							)}
 						>
 							{isMutationLoading ? "Saving..." : "Save"}
 						</button>
 					</div>
-					<blockquote>"{data.quote}"</blockquote>
+					<blockquote
+						className={classNames("mt-4 sm:block", {
+							hidden: hiddenOnMobile,
+						})}
+					>
+						"{data.quote}"
+					</blockquote>
+					<button
+						type="button"
+						onClick={() => setHiddenOnMobile(value => !value)}
+						className={classNames(
+							"text-sky-500 text-sm hover:underline disabled:no-underline sm:hidden",
+							{ "inline-block": hiddenOnMobile }
+						)}
+					>
+						{hiddenOnMobile ? "+ show" : "- hide"}
+					</button>
 				</>
 			)}
 		</Card>

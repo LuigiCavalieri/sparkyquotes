@@ -32,13 +32,13 @@ export default function AdminLayout() {
 				</Helmet>
 			)}
 			<header className="h-12 px-5 bg-sky-700">
-				<div className="container text-white h-full flex justify-between">
-					<h1 className="font-bold text-xl md:text-2xl my-auto">{appConfig.appName}</h1>
-					<div className="my-auto">
-						<span className="text-xs">{`Hello ${getUserInfo()?.name}! — `}</span>
+				<div className="container text-white h-full flex justify-between items-center">
+					<h1 className="leading-none font-bold text-xl md:text-2xl">{appConfig.appName}</h1>
+					<div className="text-xs mt-1">
+						<span>{`Hello ${getUserInfo()?.name}! — `}</span>
 						<button
 							data-testid="logout-button"
-							className="text-sm leading-none underline"
+							className="leading-none underline sm:text-sm"
 							onClick={() => doLogout()}
 						>
 							Log out
