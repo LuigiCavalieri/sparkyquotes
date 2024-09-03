@@ -1,5 +1,3 @@
-import "./library/fetch-interceptor";
-
 export const POSTwithoutResponse = <Payload = unknown>(url: string, payload?: Payload) => {
 	return fetch(url, {
 		method: "POST",
