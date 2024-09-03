@@ -1,4 +1,5 @@
 node_modules
 dist
+spa
 .env.development
 .env.production
