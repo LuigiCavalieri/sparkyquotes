@@ -2,7 +2,12 @@ import { useState } from "react";
 import { ErrorMessageProps } from "./ErrorMessage.types";
 import classNames from "classnames";
 
-export default function ErrorMessage({ testid, canBeDismissed, className, children }: ErrorMessageProps) {
+export default function ErrorMessage({
+	testid,
+	canBeDismissed,
+	className,
+	children,
+}: ErrorMessageProps) {
 	const [dismissed, setDismissed] = useState(false);
 
 	if (dismissed) {

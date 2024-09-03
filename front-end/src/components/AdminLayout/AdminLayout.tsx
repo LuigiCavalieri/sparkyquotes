@@ -36,7 +36,11 @@ export default function AdminLayout() {
 					<h1 className="font-bold text-xl md:text-2xl my-auto">{appConfig.appName}</h1>
 					<div className="my-auto">
 						<span className="text-xs">{`Hello ${getUserInfo()?.name}! — `}</span>
-						<button data-testid="logout-button" className="text-sm leading-none underline" onClick={() => doLogout()}>
+						<button
+							data-testid="logout-button"
+							className="text-sm leading-none underline"
+							onClick={() => doLogout()}
+						>
 							Log out
 						</button>
 					</div>

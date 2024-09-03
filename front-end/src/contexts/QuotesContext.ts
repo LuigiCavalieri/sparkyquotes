@@ -20,7 +20,10 @@ export interface QuotesContextInterface {
 		numOfItems: number;
 	};
 	refreshQuotes: (filters: Quotes.Filters) => void;
-	saveQuote: (newQuote: Quotes.ItemWithoutServerGenFields, options?: SaveQuoteFunctionOptions) => void;
+	saveQuote: (
+		newQuote: Quotes.ItemWithoutServerGenFields,
+		options?: SaveQuoteFunctionOptions
+	) => void;
 }
 
 export const QuotesContext = createContext<QuotesContextInterface>({

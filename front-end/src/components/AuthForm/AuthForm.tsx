@@ -5,7 +5,13 @@ import TextField from "../TextField/TextField";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
-export default function AuthForm({ type, errorMessage, disabled, isLoading, onSubmit }: AuthFormProps) {
+export default function AuthForm({
+	type,
+	errorMessage,
+	disabled,
+	isLoading,
+	onSubmit,
+}: AuthFormProps) {
 	const isSignupForm = type === "signup";
 	const initialFieldsInfo = getFieldsInfo(isSignupForm);
 
@@ -92,7 +98,11 @@ export default function AuthForm({ type, errorMessage, disabled, isLoading, onSu
 
 	return (
 		<>
-			<form data-testid={`${type}-form`} className="flex flex-col gap-5 mb-10" onSubmit={handleOnSubmit}>
+			<form
+				data-testid={`${type}-form`}
+				className="flex flex-col gap-5 mb-10"
+				onSubmit={handleOnSubmit}
+			>
 				{Object.values(fieldsInfo).map(info => {
 					return (
 						<TextField

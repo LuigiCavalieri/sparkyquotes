@@ -2,7 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { HttpError } from "http-errors";
 import { TokenExpiredError } from "jsonwebtoken";
 
-export const errorHandlerMiddleware = (error: any, _req: Request, res: Response, next: NextFunction) => {
+export const errorHandlerMiddleware = (
+	error: any,
+	_req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	if (res.headersSent) {
 		return next(error);
 	}

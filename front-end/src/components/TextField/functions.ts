@@ -25,7 +25,10 @@ export const validateInput = (
 			break;
 
 		case "password":
-			regex = new RegExp(`^[a-z0-9${appConfig.passwordSpecialChars}]{${appConfig.passwordMinLength},}$`, "i");
+			regex = new RegExp(
+				`^[a-z0-9${appConfig.passwordSpecialChars}]{${appConfig.passwordMinLength},}$`,
+				"i"
+			);
 
 			if (!regex.test(value)) {
 				errorMsg = `Password must be an alphanumeric string of at least ${appConfig.passwordMinLength} characters.  

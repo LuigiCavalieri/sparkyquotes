@@ -1,4 +1,7 @@
-export const getStorageItem = <DefaultValue = unknown>(key: string, defaultValue?: DefaultValue) => {
+export const getStorageItem = <DefaultValue = unknown>(
+	key: string,
+	defaultValue?: DefaultValue
+) => {
 	try {
 		const item = localStorage.getItem(key);
 

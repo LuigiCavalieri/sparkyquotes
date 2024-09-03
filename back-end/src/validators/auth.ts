@@ -22,7 +22,10 @@ const validatePassword = body("password")
 
 		return regex.test(value);
 	})
-	.withMessage("Must be aphanumeric and can include only these special characters: " + appConfig.passwordSpecialChars);
+	.withMessage(
+		"Must be aphanumeric and can include only these special characters: " +
+			appConfig.passwordSpecialChars
+	);
 
 export const validateSignup = validate([validateName, validateEmail, validatePassword]);
 

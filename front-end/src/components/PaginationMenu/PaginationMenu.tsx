@@ -5,7 +5,12 @@ import { PaginationMenuProps } from "./PaginationMenu.types";
 import PaginationMenuButton from "./PaginationMenuButton/PaginationMenuButton";
 import Arrow from "../Arrow/Arrow";
 
-export default function PaginationMenu({ currentPage, numOfQuotes, className, onClick }: PaginationMenuProps) {
+export default function PaginationMenu({
+	currentPage,
+	numOfQuotes,
+	className,
+	onClick,
+}: PaginationMenuProps) {
 	const { counterText, totalPages } = useMemo(() => {
 		const firstItemInPageIndex = 1 + appConfig.quotesPerPage * (currentPage - 1);
 		const maxLastItemInPageIndex = firstItemInPageIndex + appConfig.quotesPerPage - 1;

@@ -128,12 +128,19 @@ export default function TextField({
 					disabled={disabled}
 					placeholder={placeholder}
 					onChange={handleOnChange}
-					className={classNames("leading-10 outline-none px-2 flex-grow disabled:text-slate-400", className)}
+					className={classNames(
+						"leading-10 outline-none px-2 flex-grow disabled:text-slate-400",
+						className
+					)}
 					onFocus={() => setIsActive(true)}
 					onBlur={() => setIsActive(false)}
 				/>
 				{type === "password" && (
-					<button type="button" className="px-2" onClick={() => setPasswordReadable(!passwordReadable)}>
+					<button
+						type="button"
+						className="px-2"
+						onClick={() => setPasswordReadable(!passwordReadable)}
+					>
 						<img src={passwordReadable ? eyeShutIcon : eyeIcon} className="w-6 h-auto" />
 					</button>
 				)}

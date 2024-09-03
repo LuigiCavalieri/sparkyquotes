@@ -16,9 +16,19 @@ export default function Arrow({ direction, className, style }: ArrowProps) {
 				xmlns="http://www.w3.org/2000/svg"
 			>
 				{direction === "left" ? (
-					<path fillRule="evenodd" clipRule="evenodd" d="M20 13v-2H8l4-4-1-2-7 7 7 7 1-2-4-4z" fill="currentColor" />
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="M20 13v-2H8l4-4-1-2-7 7 7 7 1-2-4-4z"
+						fill="currentColor"
+					/>
 				) : (
-					<path fillRule="evenodd" clipRule="evenodd" d="m4 13v-2h12l-4-4 1-2 7 7-7 7-1-2 4-4z" fill="currentColor" />
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="m4 13v-2h12l-4-4 1-2 7 7-7 7-1-2 4-4z"
+						fill="currentColor"
+					/>
 				)}
 			</svg>
 		</span>

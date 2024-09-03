@@ -1,9 +1,9 @@
-import { POSTwithoutResponse, POST, GET } from ".";
+import { POSTwithoutRespData, POST, GET } from ".";
 import { AuthFormValues } from "../components/AuthForm/AuthForm.types";
 import { endpointsUrl } from "../config/endpointsUrl";
 
 export const login = (payload: AuthFormValues) => {
-	return POSTwithoutResponse(endpointsUrl.login, payload);
+	return POSTwithoutRespData(endpointsUrl.login, payload);
 };
 
 export const signup = (payload: AuthFormValues) => {
@@ -11,7 +11,7 @@ export const signup = (payload: AuthFormValues) => {
 };
 
 export const logout = () => {
-	return POSTwithoutResponse(endpointsUrl.logout);
+	return POSTwithoutRespData(endpointsUrl.logout);
 };
 
 export const me = () => {

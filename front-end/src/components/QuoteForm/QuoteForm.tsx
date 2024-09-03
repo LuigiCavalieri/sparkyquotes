@@ -60,7 +60,10 @@ export default function QuoteForm() {
 					disabled={saveMutationState.isLoading}
 					maxLength={appConfig.authorNameMaxLength}
 				/>
-				<SubmitButton disabled={!submitEnabled || saveMutationState.isLoading} className="justify-self-end w-1/4">
+				<SubmitButton
+					disabled={!submitEnabled || saveMutationState.isLoading}
+					className="justify-self-end w-1/4"
+				>
 					{saveMutationState.isLoading ? "Saving..." : "Save"}
 				</SubmitButton>
 			</form>
