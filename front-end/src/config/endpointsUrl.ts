@@ -1,0 +1,9 @@
+const baseUrl = import.meta.env.VITE_API_URL || ``;
+
+export const endpointsUrl = {
+	signup: `${baseUrl}/signup`,
+	login: `${baseUrl}/login`,
+	logout: `${baseUrl}/logout`,
+	me: `${baseUrl}/me`,
+	quotes: `${baseUrl}/quotes`,
+};
