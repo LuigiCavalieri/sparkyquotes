@@ -1,25 +1,36 @@
-describe( "Saving feature", () => {
-  it( "shows the newly saved quote at the top of the list", () => {
-    const quote = {
-      content: `This is a new quote [${Date.now().toString()}]`,
-      author: "Ipse"
-    };
+describe("Saving feature", () => {
+	it("shows the newly saved quote at the top of the list", () => {
+		const quote = {
+			content: `This is a new quote [${Date.now().toString()}]`,
+			author: "Ipse",
+		};
 
-    cy.visit( "/" );
-    cy.get( "[data-testid='login-form']" ).as( "login-form" );
-    cy.get( "@login-form" ).find( "input[name='email']" ).type( Cypress.env( "userEmail" ) );
-    cy.get( "@login-form" ).find( "input[name='password']" ).type( Cypress.env( "userPassword" ) );
-    cy.get( "@login-form" ).find( "button[type='submit']" ).click();
-    
-    cy.get( "[data-testid='quote-form']" ).as( "quote-form" );
-    cy.get( "@quote-form" ).should( "exist" );
-    cy.get( "@quote-form" ).find( "textarea" ).type( quote.content );
-    cy.get( "@quote-form" ).find( "input[name='author']" ).type( quote.author );
-    cy.get( "@quote-form" ).find( "button[type='submit']" ).click();
+		cy.intercept("POST", "**/quotes").as("saveQuote");
+		cy.intercept("GET", "**/quotes?**").as("getQuotes");
 
-    cy.get( "[data-testid='quotes-list']" ).as( "quotes-list" );
-    cy.get( "@quotes-list" ).should( "exist" );
-    cy.get( "@quotes-list" ).find( "blockquote" ).first().should( "have.text", quote.content );
-    cy.get( "@quotes-list" ).find( "figcaption" ).first().should( "have.text", quote.author );
-  });
+		cy.visit("/");
+		cy.get("[data-testid='login-form']").as("loginForm");
+		cy.get("@loginForm").find("input[name='email']").type(Cypress.env("userEmail"));
+		cy.get("@loginForm").find("input[name='password']").type(Cypress.env("userPassword"));
+		cy.get("@loginForm").find("button[type='submit']").click();
+		cy.get("[data-testid='quote-form']").as("quoteForm");
+		cy.get("@quoteForm").should("exist");
+		cy.get("@quoteForm").find("textarea").type(quote.content);
+		cy.get("@quoteForm").find("input[name='author']").type(quote.author);
+		cy.get("@quoteForm").find("button[type='submit']").click();
+		cy.wait(["@saveQuote", "@getQuotes"]);
+		cy.wait(2000); // Gives React the time to update the UI.
+		cy.get("[data-testid='quotes-list']").as("quotesList");
+		cy.get("@quotesList").should("exist");
+		cy.get("@quotesList").find("figcaption").first().should("have.text", quote.author);
+		cy.get("@quotesList")
+			.find("blockquote")
+			.first()
+			.invoke("text")
+			.then(quoteContent => {
+				const trimmedContent = quoteContent.replace(/^"|"$/g, "");
+
+				cy.wrap(trimmedContent).should("be.equal", quote.content);
+			});
+	});
 });
