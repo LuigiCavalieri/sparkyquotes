@@ -24,6 +24,7 @@ export default function QuotesListItem({
 			)}
 		>
 			<TextButton
+				testid="copy-to-clipboard-button"
 				title="Copy to clipboard"
 				aria-label="Copy to clipboard"
 				className="text-sm float-right h-8 flex items-center gap-1"
