@@ -18,14 +18,10 @@ export default function QuotesList() {
 	const copyToClipboard = useCallback(async (quote: Quote) => {
 		setCopiedQuoteId(quote.id);
 
-		if (!("clipboard" in navigator)) {
-			setCopyStatus(CopyStatus.error);
-
-			return;
-		}
-
 		try {
-			setCopyStatus(CopyStatus.waiting);
+			if (!("clipboard" in navigator)) {
+				throw new Error();
+			}
 
 			await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
 
