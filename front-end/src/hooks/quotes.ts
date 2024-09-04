@@ -9,15 +9,15 @@ export function useQuotes() {
 	return useContext(QuotesContext);
 }
 
-export function useSaveQuote(options?: { onSuccess?: () => void; onError?: () => void }) {
+export function useSaveQuote(callbacks?: { onSuccess?: () => void; onError?: () => void }) {
 	const queryClient = useQueryClient();
 	const { refreshQuotes } = useQuotes();
 
 	const result = useMutation<Quotes.Item, ResponseError, Quotes.ItemWithoutServerGenFields>({
 		mutationFn: saveQuote,
 		onSuccess: () => {
-			if (typeof options?.onSuccess === "function") {
-				options.onSuccess();
+			if (typeof callbacks?.onSuccess === "function") {
+				callbacks.onSuccess();
 			}
 
 			const pageOne = 1;
@@ -26,8 +26,8 @@ export function useSaveQuote(options?: { onSuccess?: () => void; onError?: () =>
 			queryClient.removeQueries({ queryKey: ["quotes"] });
 		},
 		onError: () => {
-			if (typeof options?.onError === "function") {
-				options.onError();
+			if (typeof callbacks?.onError === "function") {
+				callbacks.onError();
 			}
 		},
 	});
