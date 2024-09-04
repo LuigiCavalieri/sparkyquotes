@@ -19,6 +19,8 @@ export default function RandomQuote() {
 		data,
 		isLoading: isQueryLoading,
 		isError: isQueryError,
+		isRefetching: isQueryRefetching,
+		refetch,
 	} = useQuery({
 		enabled: settingsAvailable,
 		queryKey: ["randomQuote"],
@@ -63,25 +65,41 @@ export default function RandomQuote() {
 			) : (
 				<>
 					<div className="flex justify-between items-start gap-4">
-						<h3 className="font-semibold text-sm sm:text-normal">
+						<h3
+							className={classNames("font-semibold text-sm sm:text-base", {
+								"opacity-50": isQueryRefetching,
+							})}
+						>
 							You may like this quote by <em className="text-sky-900">{data.author}</em>
 						</h3>
-						<TextButton
-							disabled={isMutationLoading}
-							onClick={handleOnClickSave}
-							className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
-						>
-							{isMutationLoading ? "Saving..." : "Save"}
-						</TextButton>
+						<div className="flex items-center gap-2">
+							<TextButton
+								disabled={isQueryRefetching}
+								onClick={() => refetch()}
+								className="text-sm sm:leading-7"
+							>
+								Dismiss
+							</TextButton>
+							<span className="text-gray-300">|</span>
+							<TextButton
+								disabled={isMutationLoading || isQueryRefetching}
+								onClick={handleOnClickSave}
+								className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
+							>
+								{isMutationLoading ? "Saving..." : "Save"}
+							</TextButton>
+						</div>
 					</div>
 					<blockquote
 						className={classNames("mt-4 sm:block", {
+							"opacity-50": isQueryRefetching,
 							hidden: hiddenOnMobile,
 						})}
 					>
 						"{data.quote}"
 					</blockquote>
 					<TextButton
+						disabled={isQueryRefetching}
 						onClick={() => setHiddenOnMobile(value => !value)}
 						className={classNames("text-sm sm:hidden", { "inline-block": hiddenOnMobile })}
 					>
