@@ -1,12 +1,13 @@
+import { useState } from "react";
+import classNames from "classnames";
+import { useQuery } from "react-query";
 import { getRandomQuote } from "../../services/QuotesService";
 import Card from "../Card/Card";
-import { useQuery } from "react-query";
 import { useSaveQuote } from "../../hooks/quotes";
-import classNames from "classnames";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import { useState } from "react";
+import TextButton from "../TextButton/TextButton";
 
-const serviceUnavailable = !(
+const settingsAvailable = Boolean(
 	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
 );
 
@@ -19,6 +20,7 @@ export default function RandomQuote() {
 		isLoading: isQueryLoading,
 		isError: isQueryError,
 	} = useQuery({
+		enabled: settingsAvailable,
 		queryKey: ["randomQuote"],
 		queryFn: getRandomQuote,
 	});
@@ -39,7 +41,7 @@ export default function RandomQuote() {
 		location.reload();
 	};
 
-	if (serviceUnavailable) {
+	if (!settingsAvailable) {
 		return null;
 	}
 
@@ -64,17 +66,13 @@ export default function RandomQuote() {
 						<h3 className="font-semibold text-sm sm:text-normal">
 							You may like this quote by <em className="text-sky-900">{data.author}</em>
 						</h3>
-						<button
-							type="button"
+						<TextButton
 							disabled={isMutationLoading}
 							onClick={handleOnClickSave}
-							className={classNames(
-								"text-sky-500 text-sm hover:underline disabled:no-underline sm:leading-7",
-								{ "opacity-50": isMutationLoading }
-							)}
+							className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
 						>
 							{isMutationLoading ? "Saving..." : "Save"}
-						</button>
+						</TextButton>
 					</div>
 					<blockquote
 						className={classNames("mt-4 sm:block", {
@@ -83,16 +81,12 @@ export default function RandomQuote() {
 					>
 						"{data.quote}"
 					</blockquote>
-					<button
-						type="button"
+					<TextButton
 						onClick={() => setHiddenOnMobile(value => !value)}
-						className={classNames(
-							"text-sky-500 text-sm hover:underline disabled:no-underline sm:hidden",
-							{ "inline-block": hiddenOnMobile }
-						)}
+						className={classNames("text-sm sm:hidden", { "inline-block": hiddenOnMobile })}
 					>
 						{hiddenOnMobile ? "+ show" : "- hide"}
-					</button>
+					</TextButton>
 				</>
 			)}
 		</Card>

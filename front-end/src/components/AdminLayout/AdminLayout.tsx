@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/auth";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import { pageItems } from "../../config/pageItems";
 import appConfig from "../../config/appConfig";
+import TextButton from "../TextButton/TextButton";
 
 export default function AdminLayout() {
 	const { pathname } = useLocation();
@@ -36,13 +37,13 @@ export default function AdminLayout() {
 					<h1 className="leading-none font-bold text-xl md:text-2xl">{appConfig.appName}</h1>
 					<div className="text-xs mt-1">
 						<span>{`Hello ${getUserInfo()?.name}! — `}</span>
-						<button
-							data-testid="logout-button"
-							className="leading-none underline sm:text-sm"
+						<TextButton
+							testid="logout-button"
+							className="leading-none underline sm:text-sm text-white"
 							onClick={() => doLogout()}
 						>
 							Log out
-						</button>
+						</TextButton>
 					</div>
 				</div>
 			</header>
