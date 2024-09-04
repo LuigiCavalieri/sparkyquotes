@@ -3,6 +3,7 @@ import { TextButtonProps } from "./TextButton.types";
 
 export default function TextButton({
 	testid,
+	colorClassName,
 	className,
 	children,
 	...otherProps
@@ -13,7 +14,11 @@ export default function TextButton({
 			type="button"
 			data-testid={testid}
 			className={classNames(
-				"text-sky-500 hover:underline disabled:text-slate-500 disabled:no-underline",
+				"hover:underline disabled:no-underline",
+				{
+					"text-sky-600 disabled:text-slate-500": !colorClassName,
+				},
+				colorClassName,
 				className
 			)}
 		>

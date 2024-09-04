@@ -29,7 +29,8 @@ export default function RandomQuoteContent({
 					<TextButton
 						testid="random-quote-dismiss-button"
 						onClick={onClickDismiss}
-						className="text-red-600 text-sm sm:leading-7"
+						colorClassName="text-red-700"
+						className="text-sm sm:leading-7"
 					>
 						Dismiss
 					</TextButton>
@@ -40,7 +41,7 @@ export default function RandomQuoteContent({
 						onClick={onClickSave}
 						className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
 					>
-						{isMutationLoading ? "Saving..." : "Save"}
+						{isMutationLoading ? "Saving..." : <span className="font-medium">Save</span>}
 					</TextButton>
 				</div>
 			</div>

@@ -39,7 +39,8 @@ export default function AdminLayout() {
 						<span>{`Hello ${getUserInfo()?.name}! — `}</span>
 						<TextButton
 							testid="logout-button"
-							className="leading-none underline sm:text-sm text-white"
+							colorClassName="text-white"
+							className="leading-none underline sm:text-sm"
 							onClick={() => doLogout()}
 						>
 							Log out
