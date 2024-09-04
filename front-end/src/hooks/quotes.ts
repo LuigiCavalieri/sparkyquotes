@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { QuotesContext } from "../contexts/QuotesContext";
 import { ResponseError } from "../types/error";
-import * as Quotes from "../types/quotes";
 import { saveQuote } from "../services/QuotesService";
+import { Quote, QuoteWithoutServerGenFields } from "../types/quotes";
 
 export function useQuotes() {
 	return useContext(QuotesContext);
@@ -13,7 +13,7 @@ export function useSaveQuote(callbacks?: { onSuccess?: () => void; onError?: () 
 	const queryClient = useQueryClient();
 	const { refreshQuotes } = useQuotes();
 
-	const result = useMutation<Quotes.Item, ResponseError, Quotes.ItemWithoutServerGenFields>({
+	const result = useMutation<Quote, ResponseError, QuoteWithoutServerGenFields>({
 		mutationFn: saveQuote,
 		onSuccess: () => {
 			if (typeof callbacks?.onSuccess === "function") {

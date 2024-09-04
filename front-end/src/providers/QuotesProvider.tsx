@@ -1,9 +1,9 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { QuotesContext } from "../contexts/QuotesContext";
-import * as Quotes from "../types/quotes";
 import { useQuery } from "react-query";
 import * as QuotesService from "../services/QuotesService";
 import { ResponseError } from "../types/error";
+import { QuotesFilters, QuotesResponseData } from "../types/quotes";
 
 interface QuotesProviderProps {
 	children: ReactNode;
@@ -13,20 +13,29 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	const [pageToLoad, setPageToLoad] = useState(1);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [samePageRefreshCounter, setSamePageRefreshCounter] = useState(0);
+	const [isRandomQuoteQueryEnabled, setIsRandomQuoteQueryEnabled] = useState(
+		radomQuoteSettingsAvailable
+	);
 
 	const {
 		data: queryData,
 		isError: isQueryError,
 		isLoading: isQueryLoading,
 		isRefetching: isQueryRefetching,
-	} = useQuery<Quotes.ResponseData, ResponseError>({
+	} = useQuery<QuotesResponseData, ResponseError>({
 		keepPreviousData: true,
 		queryKey: ["quotes", pageToLoad, samePageRefreshCounter],
 		queryFn: () => QuotesService.getQuotes({ page: pageToLoad }),
 	});
 
+	const randomQuoteQueryState = useQuery({
+		enabled: isRandomQuoteQueryEnabled,
+		queryKey: ["randomQuote"],
+		queryFn: QuotesService.getRandomQuote,
+	});
+
 	const refreshQuotes = useCallback(
-		({ page }: Quotes.Filters) => {
+		({ page }: QuotesFilters) => {
 			setPageToLoad(page);
 
 			if (page === currentPage) {
@@ -34,6 +43,15 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 			}
 		},
 		[currentPage]
+	);
+
+	const maybeIsRandomQuoteQueryEnabled = useCallback(
+		(enabled: boolean) => {
+			if (radomQuoteSettingsAvailable) {
+				setIsRandomQuoteQueryEnabled(enabled);
+			}
+		},
+		[radomQuoteSettingsAvailable]
 	);
 
 	useEffect(() => {
@@ -45,8 +63,13 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	return (
 		<QuotesContext.Provider
 			value={{
+				randomQuoteQueryState: {
+					...randomQuoteQueryState,
+					isEnabled: isRandomQuoteQueryEnabled,
+					updateEnabled: maybeIsRandomQuoteQueryEnabled,
+				},
 				quotes: queryData?.quotes || [],
-				queryState: {
+				mainQueryState: {
 					isLoading: isQueryLoading,
 					isRefetching: isQueryRefetching,
 					isError: isQueryError,
@@ -62,3 +85,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 		</QuotesContext.Provider>
 	);
 }
+
+const radomQuoteSettingsAvailable = Boolean(
+	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
+);

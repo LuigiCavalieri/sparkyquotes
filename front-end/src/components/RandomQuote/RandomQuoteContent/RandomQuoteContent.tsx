@@ -28,9 +28,8 @@ export default function RandomQuoteContent({
 				<div className="flex items-center gap-2">
 					<TextButton
 						testid="random-quote-dismiss-button"
-						disabled={isQueryRefetching}
 						onClick={onClickDismiss}
-						className="text-sm sm:leading-7"
+						className="text-red-600 text-sm sm:leading-7"
 					>
 						Dismiss
 					</TextButton>

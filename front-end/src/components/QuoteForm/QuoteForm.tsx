@@ -1,11 +1,11 @@
 import { ChangeEvent, useRef, useState, FormEvent } from "react";
 import appConfig from "../../config/appConfig";
 import { useSaveQuote } from "../../hooks/quotes";
-import * as Quotes from "../../types/quotes";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import TextField from "../TextField/TextField";
 import Card from "../Card/Card";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { QuoteWithoutServerGenFields } from "../../types/quotes";
 
 export default function QuoteForm() {
 	const formRef = useRef<HTMLFormElement | null>(null);
@@ -30,7 +30,7 @@ export default function QuoteForm() {
 		}
 
 		const formData = new FormData(formRef.current);
-		const fieldsValue = Object.fromEntries(formData.entries()) as Quotes.ItemWithoutServerGenFields;
+		const fieldsValue = Object.fromEntries(formData.entries()) as QuoteWithoutServerGenFields;
 
 		setSubmitEnabled(false);
 		mutate(fieldsValue);

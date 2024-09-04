@@ -1,7 +1,7 @@
-import * as Quotes from "../../../types/quotes";
+import { QuoteWithoutServerGenFields } from "../../../types/quotes";
 
 export interface RandomQuoteContentProps {
-	quote: Quotes.ItemWithoutServerGenFields;
+	quote: QuoteWithoutServerGenFields;
 	isQueryRefetching: boolean;
 	isMutationLoading: boolean;
 	onClickDismiss: () => void;

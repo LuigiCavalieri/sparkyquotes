@@ -1,7 +1,13 @@
 import { GET, POST } from ".";
 import appConfig from "../config/appConfig";
 import { endpointsUrl } from "../config/endpointsUrl";
-import * as Quotes from "../types/quotes";
+import {
+	Quote,
+	QuotesFilters,
+	QuotesRequestQueryParams,
+	QuotesResponseData,
+	QuoteWithoutServerGenFields,
+} from "../types/quotes";
 
 export const getRandomQuote = async () => {
 	const url = String(import.meta.env.VITE_NINJAS_API_URL || "");
@@ -22,7 +28,7 @@ export const getRandomQuote = async () => {
 			throw new Error("Unknown data structure");
 		}
 
-		const quote: Quotes.ItemWithoutServerGenFields = {
+		const quote: QuoteWithoutServerGenFields = {
 			content: data[0]?.quote || "",
 			author: data[0]?.author || "",
 		};
@@ -33,8 +39,8 @@ export const getRandomQuote = async () => {
 	}
 };
 
-export const getQuotes = ({ page }: Quotes.Filters) => {
-	const init: Quotes.RequestQueryParams = {
+export const getQuotes = ({ page }: QuotesFilters) => {
+	const init: QuotesRequestQueryParams = {
 		page: String(page),
 		itemsPerPage: String(appConfig.quotesPerPage),
 	};
@@ -42,9 +48,9 @@ export const getQuotes = ({ page }: Quotes.Filters) => {
 	const paramsObj = new URLSearchParams(init as unknown as Record<string, string>);
 	const url = endpointsUrl.quotes + "?" + paramsObj.toString();
 
-	return GET<Quotes.ResponseData>(url);
+	return GET<QuotesResponseData>(url);
 };
 
-export const saveQuote = (payload: Quotes.ItemWithoutServerGenFields) => {
-	return POST<Quotes.ItemWithoutServerGenFields, Quotes.Item>(endpointsUrl.quotes, payload);
+export const saveQuote = (payload: QuoteWithoutServerGenFields) => {
+	return POST<QuoteWithoutServerGenFields, Quote>(endpointsUrl.quotes, payload);
 };

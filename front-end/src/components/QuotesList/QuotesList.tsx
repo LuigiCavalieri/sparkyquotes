@@ -7,7 +7,7 @@ import appConfig from "../../config/appConfig";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function QuotesList() {
-	const { quotes, queryState, pagination, refreshQuotes } = useQuotes();
+	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
@@ -16,7 +16,7 @@ export default function QuotesList() {
 
 	return (
 		<Card title="Your saved quotes">
-			{queryState.isError && (
+			{mainQueryState.isError && (
 				<ErrorMessage className="mt-8">
 					{"Something didn't work. Please try to "}
 					<button type="button" className="underline" onClick={onClickRefresh}>
@@ -25,7 +25,7 @@ export default function QuotesList() {
 					{"."}
 				</ErrorMessage>
 			)}
-			{queryState.isLoading ? (
+			{mainQueryState.isLoading ? (
 				<p className="text-gray-500 text-sm mt-6 mb-2">Quotes are loading...</p>
 			) : !quotes.length ? (
 				<p className="text-sm mt-6 mb-2">No quotes found.</p>
@@ -34,7 +34,7 @@ export default function QuotesList() {
 					<ol
 						data-testid="quotes-list"
 						className={classNames({
-							"opacity-50": queryState.isRefetching,
+							"opacity-50": mainQueryState.isRefetching,
 						})}
 					>
 						{quotes.map((quote, idx) => {

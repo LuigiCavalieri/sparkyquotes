@@ -1,7 +1,7 @@
-import * as Quotes from "../../types/quotes";
+import { Quote } from "../../types/quotes";
 
 export interface QuotesListItemProps {
-	quote: Quotes.Item;
+	quote: Quote;
 	itemIndex: number;
 	className?: string;
 }

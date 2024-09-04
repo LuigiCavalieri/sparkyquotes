@@ -1,22 +1,22 @@
-export interface Item {
+export interface Quote {
 	id: string;
 	content: string;
 	author: string;
 	created_at: string;
 }
 
-export type ItemWithoutServerGenFields = Omit<Item, "id" | "created_at">;
+export type QuoteWithoutServerGenFields = Omit<Quote, "id" | "created_at">;
 
-export interface ResponseData {
+export interface QuotesResponseData {
 	total_count: number;
-	quotes: Item[];
+	quotes: Quote[];
 }
 
-export interface RequestQueryParams {
+export interface QuotesRequestQueryParams {
 	itemsPerPage: string;
 	page: string;
 }
 
-export interface Filters {
+export interface QuotesFilters {
 	page: number;
 }
