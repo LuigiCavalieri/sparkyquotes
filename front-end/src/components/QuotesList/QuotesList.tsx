@@ -15,36 +15,33 @@ export default function QuotesList() {
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
-	const copyToClipboard = useCallback(
-		async (quote: Quote) => {
-			setCopiedQuoteId(quote.id);
+	const copyToClipboard = useCallback(async (quote: Quote) => {
+		setCopiedQuoteId(quote.id);
 
-			if (!("clipboard" in navigator)) {
-				setCopyStatus(CopyStatus.error);
+		if (!("clipboard" in navigator)) {
+			setCopyStatus(CopyStatus.error);
 
-				return;
-			}
+			return;
+		}
 
-			try {
-				setCopyStatus(CopyStatus.waiting);
+		try {
+			setCopyStatus(CopyStatus.waiting);
 
-				await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
+			await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
 
-				setCopyStatus(CopyStatus.copied);
-			} catch (error) {
-				setCopyStatus(CopyStatus.error);
-			} finally {
-				maybeClearTimer();
-			}
+			setCopyStatus(CopyStatus.copied);
+		} catch (error) {
+			setCopyStatus(CopyStatus.error);
+		} finally {
+			maybeClearTimer();
+		}
 
-			timerRef.current = setTimeout(() => {
-				timerRef.current = null;
+		timerRef.current = setTimeout(() => {
+			timerRef.current = null;
 
-				setCopyStatus(CopyStatus.waiting);
-			}, appConfig.copyFeedbackTimeout);
-		},
-		[copyStatus]
-	);
+			setCopyStatus(CopyStatus.waiting);
+		}, appConfig.copyFeedbackTimeout);
+	}, []);
 
 	useEffect(() => {
 		return maybeClearTimer;
