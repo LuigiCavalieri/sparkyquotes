@@ -1,18 +1,15 @@
-import { useState } from "react";
-import classNames from "classnames";
 import { useQuery } from "react-query";
 import { getRandomQuote } from "../../services/QuotesService";
 import Card from "../Card/Card";
 import { useSaveQuote } from "../../hooks/quotes";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import TextButton from "../TextButton/TextButton";
+import RandomQuoteContent from "./RandomQuoteContent/RandomQuoteContent";
 
 const settingsAvailable = Boolean(
 	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
 );
 
 export default function RandomQuote() {
-	const [hiddenOnMobile, setHiddenOnMobile] = useState(true);
 	const { isError: isMutationError, isLoading: isMutationLoading, mutate } = useSaveQuote();
 
 	const {
@@ -28,14 +25,9 @@ export default function RandomQuote() {
 	});
 
 	const handleOnClickSave = () => {
-		if (!data) {
-			return;
+		if (data) {
+			mutate(data);
 		}
-
-		mutate({
-			content: data.quote,
-			author: data.author,
-		});
 	};
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -63,49 +55,13 @@ export default function RandomQuote() {
 					{"."}
 				</p>
 			) : (
-				<>
-					<div className="flex justify-between items-start gap-4">
-						<h3
-							className={classNames("font-semibold text-sm sm:text-base", {
-								"opacity-50": isQueryRefetching,
-							})}
-						>
-							You may like this quote by <em className="text-sky-900">{data.author}</em>
-						</h3>
-						<div className="flex items-center gap-2">
-							<TextButton
-								disabled={isQueryRefetching}
-								onClick={() => refetch()}
-								className="text-sm sm:leading-7"
-							>
-								Dismiss
-							</TextButton>
-							<span className="text-gray-300">|</span>
-							<TextButton
-								disabled={isMutationLoading || isQueryRefetching}
-								onClick={handleOnClickSave}
-								className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
-							>
-								{isMutationLoading ? "Saving..." : "Save"}
-							</TextButton>
-						</div>
-					</div>
-					<blockquote
-						className={classNames("mt-4 sm:block", {
-							"opacity-50": isQueryRefetching,
-							hidden: hiddenOnMobile,
-						})}
-					>
-						"{data.quote}"
-					</blockquote>
-					<TextButton
-						disabled={isQueryRefetching}
-						onClick={() => setHiddenOnMobile(value => !value)}
-						className={classNames("text-sm sm:hidden", { "inline-block": hiddenOnMobile })}
-					>
-						{hiddenOnMobile ? "+ show" : "- hide"}
-					</TextButton>
-				</>
+				<RandomQuoteContent
+					quote={data}
+					isMutationLoading={isMutationLoading}
+					isQueryRefetching={isQueryRefetching}
+					onClickSave={handleOnClickSave}
+					onClickDismiss={() => refetch()}
+				/>
 			)}
 		</Card>
 	);

@@ -22,7 +22,12 @@ export const getRandomQuote = async () => {
 			throw new Error("Unknown data structure");
 		}
 
-		return Promise.resolve(data[0]);
+		const quote: Quotes.ItemWithoutServerGenFields = {
+			content: data[0]?.quote || "",
+			author: data[0]?.author || "",
+		};
+
+		return Promise.resolve(quote);
 	} catch (error) {
 		return Promise.reject(error);
 	}
