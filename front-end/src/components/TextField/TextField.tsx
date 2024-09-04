@@ -2,9 +2,9 @@ import { ChangeEvent, useRef, useState } from "react";
 import classNames from "classnames";
 import { TextFieldProps } from "./TextField.types";
 import { toTitleCase } from "../../utils/strings";
-import eyeIcon from "../../images/eye.svg";
-import eyeShutIcon from "../../images/eye-shut.svg";
 import { validateInput } from "./functions";
+import EyeSlashIcon from "../Heroicons/EyeSlash";
+import EyeIcon from "../Heroicons/EyeIcon";
 
 export default function TextField({
 	required,
@@ -141,7 +141,7 @@ export default function TextField({
 						className="px-2"
 						onClick={() => setPasswordReadable(!passwordReadable)}
 					>
-						<img src={passwordReadable ? eyeShutIcon : eyeIcon} className="w-6 h-auto" />
+						{passwordReadable ? <EyeSlashIcon /> : <EyeIcon />}
 					</button>
 				)}
 			</div>
