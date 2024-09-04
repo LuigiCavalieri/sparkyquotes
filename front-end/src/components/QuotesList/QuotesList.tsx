@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { useQuotes } from "../../hooks/quotes";
 import Card from "../Card/Card";
@@ -5,9 +6,56 @@ import QuotesListItem from "../QuotesListItem/QuotesListItem";
 import PaginationMenu from "../PaginationMenu/PaginationMenu";
 import appConfig from "../../config/appConfig";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { CopyStatus } from "../../constants";
+import { Quote } from "../../types/quotes";
 
 export default function QuotesList() {
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
+	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
+
+	const copyToClipboard = useCallback(
+		async (quote: Quote) => {
+			setCopiedQuoteId(quote.id);
+
+			if (!("clipboard" in navigator)) {
+				setCopyStatus(CopyStatus.error);
+
+				return;
+			}
+
+			try {
+				setCopyStatus(CopyStatus.waiting);
+
+				await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
+
+				setCopyStatus(CopyStatus.copied);
+			} catch (error) {
+				setCopyStatus(CopyStatus.error);
+			} finally {
+				maybeClearTimer();
+			}
+
+			timerRef.current = setTimeout(() => {
+				timerRef.current = null;
+
+				setCopyStatus(CopyStatus.waiting);
+			}, appConfig.copyFeedbackTimeout);
+		},
+		[copyStatus]
+	);
+
+	useEffect(() => {
+		return maybeClearTimer;
+	}, []);
+
+	const maybeClearTimer = () => {
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
+			console.log(1);
+		}
+	};
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
@@ -45,6 +93,8 @@ export default function QuotesList() {
 									key={`QuoteItem_${quote.id}`}
 									quote={quote}
 									itemIndex={itemNum}
+									copyStatus={copiedQuoteId === quote.id ? copyStatus : CopyStatus.waiting}
+									onClickCopy={() => copyToClipboard(quote)}
 									className={classNames({
 										"border-t border-dashed border-t-slate-400": idx !== 0,
 									})}

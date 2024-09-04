@@ -27,6 +27,7 @@ export default function PaginationMenu({
 	return (
 		<div className={classNames("flex justify-between items-center", className)}>
 			<PaginationMenuButton
+				aria-label="Previous page"
 				testid="prev-page-button"
 				disabled={currentPage <= 1}
 				onClick={() => onClick(Math.max(1, currentPage - 1))}
@@ -35,6 +36,7 @@ export default function PaginationMenu({
 			</PaginationMenuButton>
 			<span className="text-sm text-gray-500">{counterText}</span>
 			<PaginationMenuButton
+				aria-label="Next page"
 				testid="next-page-button"
 				disabled={currentPage >= totalPages}
 				onClick={() => onClick(Math.min(totalPages, currentPage + 1))}

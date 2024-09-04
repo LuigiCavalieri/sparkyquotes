@@ -6,6 +6,7 @@ interface AppConfig {
 	authorNameMaxLength: number;
 	authorDefaultName: string;
 	quotesPerPage: number;
+	copyFeedbackTimeout: number;
 	reactQueryStaleTime: number;
 }
 
@@ -17,6 +18,7 @@ const appConfig: Readonly<AppConfig> = {
 	authorNameMaxLength: 100,
 	authorDefaultName: "anonymous",
 	quotesPerPage: 5,
+	copyFeedbackTimeout: 3000,
 	reactQueryStaleTime: Infinity,
 };
 
