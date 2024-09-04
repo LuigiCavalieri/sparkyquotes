@@ -32,26 +32,6 @@ describe("Random quote feature", () => {
 			});
 	});
 
-	it("shows a new quote when the user clicks on 'dismiss'", () => {
-		cy.get("[data-testid='random-quote-content']").as("randomQuote");
-		cy.get("@randomQuote")
-			.should("exist")
-			.invoke("text")
-			.then(quoteContent => {
-				cy.wrap(quoteContent).as("first-random-quote-content");
-			});
-		cy.get("[data-testid='random-quote-dismiss-button']").click();
-		cy.wait("@getRandomQuote");
-		cy.wait(2000);
-		cy.get("@randomQuote")
-			.should("exist")
-			.invoke("text")
-			.then(quoteContent => {
-				cy.wrap(quoteContent).should("have.length.at.least", 5);
-				cy.get("@first-random-quote-content").should("not.be.equal", quoteContent);
-			});
-	});
-
 	it("saves the quote to the list when the user clicks on 'save'", () => {
 		cy.intercept("POST", "**/quotes").as("saveQuote");
 		cy.intercept("GET", "**/quotes?**").as("getQuotes");
@@ -85,5 +65,11 @@ describe("Random quote feature", () => {
 			.then(quoteAuthor => {
 				cy.get("@randomQuoteAuthor").should("be.equal", quoteAuthor);
 			});
+	});
+
+	it("completely hides the random quote card when the user clicks on 'dismiss'", () => {
+		cy.get("[data-testid='random-quote-content']").should("exist");
+		cy.get("[data-testid='random-quote-dismiss-button']").click();
+		cy.get("[data-testid='random-quote-card']").should("not.exist");
 	});
 });

@@ -17,7 +17,7 @@ export default function RandomQuote() {
 	}
 
 	return (
-		<Card>
+		<Card testid="random-quote-card">
 			{isMutationError && (
 				<ErrorMessage canBeDismissed>Failed saving quote. Please, try again.</ErrorMessage>
 			)}
