@@ -58,7 +58,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 		mutationFn: AuthService.logout,
 	});
 
-	useQuery<UserInfo>({
+	useQuery({
 		queryFn: AuthService.me,
 		enabled: shouldFetch,
 		onSuccess: data => {
