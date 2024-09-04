@@ -45,14 +45,11 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 		[currentPage]
 	);
 
-	const maybeIsRandomQuoteQueryEnabled = useCallback(
-		(enabled: boolean) => {
-			if (radomQuoteSettingsAvailable) {
-				setIsRandomQuoteQueryEnabled(enabled);
-			}
-		},
-		[radomQuoteSettingsAvailable]
-	);
+	const maybeIsRandomQuoteQueryEnabled = useCallback((enabled: boolean) => {
+		if (radomQuoteSettingsAvailable) {
+			setIsRandomQuoteQueryEnabled(enabled);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (!isQueryRefetching && currentPage !== pageToLoad) {

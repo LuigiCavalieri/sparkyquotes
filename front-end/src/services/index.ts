@@ -5,7 +5,7 @@ export const POSTwithoutRespData = <Payload = unknown>(url: string, payload?: Pa
 	});
 };
 
-export const POST = async <Payload = unknown, Data = any>(
+export const POST = async <Payload = unknown, Data = unknown>(
 	url: string,
 	payload?: Payload
 ): Promise<Data> => {
@@ -18,7 +18,10 @@ export const POST = async <Payload = unknown, Data = any>(
 	}
 };
 
-export const GET = async <Data = any>(url: string, requestInit?: RequestInit): Promise<Data> => {
+export const GET = async <Data = unknown>(
+	url: string,
+	requestInit?: RequestInit
+): Promise<Data> => {
 	try {
 		const response = await fetch(url, requestInit);
 
