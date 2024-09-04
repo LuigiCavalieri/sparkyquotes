@@ -20,10 +20,14 @@ export default function RandomQuoteContent({
 						"opacity-50": isQueryRefetching,
 					})}
 				>
-					You may like this quote by <em className="text-sky-900">{quote.author}</em>
+					{"You may like this quote by "}
+					<em className="text-sky-900" data-testid="random-quote-author">
+						{quote.author}
+					</em>
 				</h3>
 				<div className="flex items-center gap-2">
 					<TextButton
+						testid="random-quote-dismiss-button"
 						disabled={isQueryRefetching}
 						onClick={onClickDismiss}
 						className="text-sm sm:leading-7"
@@ -32,6 +36,7 @@ export default function RandomQuoteContent({
 					</TextButton>
 					<span className="text-gray-300">|</span>
 					<TextButton
+						testid="random-quote-save-button"
 						disabled={isMutationLoading || isQueryRefetching}
 						onClick={onClickSave}
 						className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
@@ -41,6 +46,7 @@ export default function RandomQuoteContent({
 				</div>
 			</div>
 			<blockquote
+				data-testid="random-quote-content"
 				className={classNames("mt-4 sm:block", {
 					"opacity-50": isQueryRefetching,
 					hidden: hiddenOnMobile,
