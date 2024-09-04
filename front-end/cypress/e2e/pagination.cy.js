@@ -32,11 +32,7 @@ describe("Pagination feature", () => {
 				.find("blockquote")
 				.first()
 				.invoke("text")
-				.then(quoteContent => {
-					const trimmedContent = quoteContent.replace(/^"|"$/g, "");
-
-					cy.wrap(trimmedContent).should("be.equal", quote.content);
-				});
+				.should("be.equal", quote.content);
 		}
 
 		cy.get("[data-testid='next-page-button']").click();

@@ -1,4 +1,19 @@
 describe("Saving feature", () => {
+	beforeEach(() => {
+		cy.visit("/");
+		cy.get("[data-testid='login-form']").as("loginForm");
+		cy.get("@loginForm").find("input[name='email']").type(Cypress.env("userEmail"));
+		cy.get("@loginForm").find("input[name='password']").type(Cypress.env("userPassword"));
+		cy.get("@loginForm").find("button[type='submit']").click();
+	});
+
+	it("shows a form to submit a quote", () => {
+		cy.get("[data-testid='quote-form']").as("quoteForm").should("exist");
+		cy.get("@quoteForm").find("textarea").should("exist").should("be.enabled");
+		cy.get("@quoteForm").find("input[name='author']").should("exist").should("be.enabled");
+		cy.get("@quoteForm").find("button[type='submit']").should("exist").should("be.disabled");
+	});
+
 	it("shows the newly saved quote at the top of the list", () => {
 		const quote = {
 			content: `This is a new quote [${Date.now().toString()}]`,
@@ -7,12 +22,6 @@ describe("Saving feature", () => {
 
 		cy.intercept("POST", "**/quotes").as("saveQuote");
 		cy.intercept("GET", "**/quotes?**").as("getQuotes");
-
-		cy.visit("/");
-		cy.get("[data-testid='login-form']").as("loginForm");
-		cy.get("@loginForm").find("input[name='email']").type(Cypress.env("userEmail"));
-		cy.get("@loginForm").find("input[name='password']").type(Cypress.env("userPassword"));
-		cy.get("@loginForm").find("button[type='submit']").click();
 		cy.get("[data-testid='quote-form']").as("quoteForm");
 		cy.get("@quoteForm").should("exist");
 		cy.get("@quoteForm").find("textarea").type(quote.content);
@@ -27,10 +36,6 @@ describe("Saving feature", () => {
 			.find("blockquote")
 			.first()
 			.invoke("text")
-			.then(quoteContent => {
-				const trimmedContent = quoteContent.replace(/^"|"$/g, "");
-
-				cy.wrap(trimmedContent).should("be.equal", quote.content);
-			});
+			.should("be.equal", quote.content);
 	});
 });

@@ -46,12 +46,12 @@ export default function RandomQuoteContent({
 			</div>
 			<blockquote
 				data-testid="random-quote-content"
-				className={classNames("mt-4 sm:block", {
+				className={classNames("mt-4 sm:block quotes", {
 					"opacity-50": isQueryRefetching,
 					hidden: hiddenOnMobile,
 				})}
 			>
-				"{quote.content}"
+				{quote.content}
 			</blockquote>
 			<TextButton
 				disabled={isQueryRefetching}
