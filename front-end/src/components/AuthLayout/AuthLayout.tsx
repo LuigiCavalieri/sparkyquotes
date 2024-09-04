@@ -47,7 +47,7 @@ export default function AuthLayout({ type, afterForm }: AuthLayoutProps) {
 					{type === "signup" ? ` | ${appConfig.appName}` : ""}
 				</title>
 			</Helmet>
-			<div className="bg-white shadow-xl px-10 py-5 w-full min-h-80 sm:w-96 sm:px-5 sm:rounded-lg sm:mx-auto">
+			<div className="bg-white border border-slate-400 px-10 py-5 w-full min-h-80 sm:w-96 sm:px-5 sm:rounded-lg sm:mx-auto">
 				<h3 className="text-center text-3xl font-semibold mb-8 mt-2">
 					{showSuccessMessage ? "Account Created" : pageItems[type].pageTitle}
 				</h3>
