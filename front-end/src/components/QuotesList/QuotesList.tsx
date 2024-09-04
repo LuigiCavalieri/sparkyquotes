@@ -30,7 +30,7 @@ export default function QuotesList() {
 			await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
 
 			setCopyStatus(CopyStatus.copied);
-		} catch (error) {
+		} catch {
 			setCopyStatus(CopyStatus.error);
 		} finally {
 			maybeClearTimer();
