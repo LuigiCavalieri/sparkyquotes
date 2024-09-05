@@ -10,7 +10,8 @@ export const sendAccountActivationEmail = ({
 	name: string;
 	email: string;
 }) => {
-	const activationUrl = new URL(process.env.ACCOUNT_ACTIVATION_URL || "");
+	const spaHostUrl = process.env.SPA_HOST || "";
+	const activationUrl = new URL(`${spaHostUrl}/activate-account`);
 
 	activationUrl.searchParams.append("activationToken", activationToken);
 	activationUrl.searchParams.append("email", email);
