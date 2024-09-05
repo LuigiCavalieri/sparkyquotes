@@ -7,7 +7,8 @@ import { generateJwt, getJwtCookieOptions } from "../library/token";
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		let { name, email, password } = req.body;
+		let { email } = req.body;
+		const { name, password } = req.body;
 
 		const results = await db.getPool()?.query<{ email_found: boolean }>({
 			text: "SELECT EXISTS ( SELECT id FROM users WHERE email = $1 ) AS email_found",
@@ -36,7 +37,8 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		let { email, password } = req.body;
+		let { email } = req.body;
+		const { password } = req.body;
 
 		email = email.trim().toLowerCase();
 

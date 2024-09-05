@@ -49,12 +49,12 @@ export const getQuotes = async (req: Request, res: Response, next: NextFunction)
 
 export const addQuote = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		let { content, author } = req.body;
+		const { content, author } = req.body;
 
 		const theContent = content.trim();
 		let theAuthor = String(author || "");
 
-		theAuthor = theAuthor.replace(/[^\.\s\p{Letter}'0-9_-]/giu, "").trim();
+		theAuthor = theAuthor.replace(/[^.\s\p{Letter}'0-9_-]/giu, "").trim();
 
 		const results = await db.getPool()?.query<QuoteWithoutUserId>({
 			text:

@@ -3,7 +3,7 @@ import { HttpError } from "http-errors";
 import { TokenExpiredError } from "jsonwebtoken";
 
 export const errorHandlerMiddleware = (
-	error: any,
+	error: HttpError | TokenExpiredError | Error,
 	_req: Request,
 	res: Response,
 	next: NextFunction

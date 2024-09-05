@@ -9,7 +9,8 @@ export const validate = (validations: ValidationChain[]) => {
 
 			if (!result.isEmpty()) {
 				const error = result.array()[0];
-				const fieldName = (error as any).path || "";
+				/* eslint-disable  @typescript-eslint/no-explicit-any */
+				const fieldName = (error as any)?.path || "";
 				const errorMsg = (fieldName && `${fieldName}: `) + error.msg;
 
 				return next(createHttpError(400, errorMsg));
@@ -21,7 +22,7 @@ export const validate = (validations: ValidationChain[]) => {
 };
 
 export const isPersonName = (value: string) => {
-	return /^[\.\s\p{Letter}'0-9_-]+$/iu.test(value);
+	return /^[.\s\p{Letter}'0-9_-]+$/iu.test(value);
 };
 
 export const isPositiveInt = (value: string) => {
