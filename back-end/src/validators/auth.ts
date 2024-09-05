@@ -27,6 +27,12 @@ const validatePassword = body("password")
 			appConfig.passwordSpecialChars
 	);
 
+const validateActivationToken = body("activationToken")
+	.trim()
+	.custom(value => /^[a-z0-9-]+$/i.test(value));
+
 export const validateSignup = validate([validateName, validateEmail, validatePassword]);
 
 export const validateLogin = validate([validateEmail]);
+
+export const validateActivateAccount = validate([validateEmail, validateActivationToken]);
