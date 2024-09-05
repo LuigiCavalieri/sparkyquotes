@@ -1,10 +1,10 @@
-import AuthLayout from "../components/AuthLayout/AuthLayout";
+import AuthPage from "../components/AuthPage/AuthPage";
 import RouterLink from "../components/RouterLink/RouterLink";
 import { pageItems } from "../config/pageItems";
 
 export default function SignupPage() {
 	return (
-		<AuthLayout
+		<AuthPage
 			type="signup"
 			afterForm={
 				<p>

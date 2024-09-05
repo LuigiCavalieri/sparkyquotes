@@ -1,4 +1,5 @@
 import appConfig from "../../config/appConfig";
+import { isEmail } from "../../utils/strings";
 import { TextFieldInputTypes } from "./TextField.types";
 
 export const validateInput = (
@@ -17,9 +18,7 @@ export const validateInput = (
 			break;
 
 		case "email":
-			regex = /^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9-]{3,}\.[a-z]{2,5}$/i;
-
-			if (!regex.test(value)) {
+			if (!isEmail(value)) {
 				errorMsg = "Please, enter a valid email address.";
 			}
 			break;

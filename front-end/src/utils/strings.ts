@@ -13,3 +13,7 @@ export const toTitleCase = (str: string) => {
 		})
 		.join(" ");
 };
+
+export const isEmail = (str: string) => {
+	return /^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9-]{3,}\.[a-z]{2,5}$/i.test(String(str));
+};

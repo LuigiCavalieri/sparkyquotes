@@ -1,6 +1,6 @@
 import appConfig from "./appConfig";
 
-export type PageItemKey = "admin" | "list" | "login" | "signup";
+export type PageItemKey = "admin" | "list" | "login" | "signup" | "activateAccount";
 
 export interface PageItem {
 	url: string;
@@ -15,6 +15,10 @@ const _pageItems: Readonly<Record<PageItemKey, PageItem>> = {
 	signup: {
 		url: "/signup",
 		pageTitle: "Create Your Account",
+	},
+	activateAccount: {
+		url: "/activate-account",
+		pageTitle: "Your are Almost Done",
 	},
 	admin: {
 		url: `/${appConfig.adminSlug}`,

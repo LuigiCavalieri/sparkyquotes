@@ -18,3 +18,10 @@ export const logout = () => {
 export const me = () => {
 	return GET<UserInfo>(endpointsUrl.me);
 };
+
+export const activateAccount = (email: string, activationToken: string) => {
+	return fetch(endpointsUrl.activateAccount, {
+		method: "PATCH",
+		body: JSON.stringify({ email, activationToken }),
+	});
+};

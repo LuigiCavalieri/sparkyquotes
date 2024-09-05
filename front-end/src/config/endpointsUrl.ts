@@ -5,5 +5,6 @@ export const endpointsUrl = {
 	login: `${baseUrl}/login`,
 	logout: `${baseUrl}/logout`,
 	me: `${baseUrl}/me`,
+	activateAccount: `${baseUrl}/activate-account`,
 	quotes: `${baseUrl}/quotes`,
 };

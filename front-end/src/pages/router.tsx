@@ -1,12 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { pageItems } from "../config/pageItems";
 
+import App from "../App";
 import AdminLayout from "../components/AdminLayout/AdminLayout";
 import ListPage from "./ListPage";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import NotFoundPage from "./NotFoundPage";
-import App from "../App";
+import ActivateAccountPage from "./ActivateAccountPage";
 
 const router = createBrowserRouter([
 	{
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
 			{
 				path: pageItems.signup.url,
 				element: <SignupPage />,
+			},
+			{
+				path: pageItems.activateAccount.url,
+				element: <ActivateAccountPage />,
 			},
 			{
 				path: pageItems.list.url,
