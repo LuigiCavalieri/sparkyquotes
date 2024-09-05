@@ -1,7 +1,8 @@
 import nodemailer from "nodemailer";
 import appConfig from "../config/appConfig";
+import createHttpError from "http-errors";
 
-export const sendAccountActivationEmail = ({
+export const sendAccountActivationEmail = async ({
 	name,
 	email,
 	activationToken,
@@ -21,21 +22,27 @@ export const sendAccountActivationEmail = ({
 	const html = `<p>Hello ${name},<br />to activate your account, please follow this link: <a href="${plainUrl}">activate account</a>.</p>
                 <p>Kind regards,<br />${appConfig.appName} Team</p>`;
 
-	const transporter = nodemailer.createTransport({
-		host: process.env.MAILER_SMTP_HOST || "",
-		port: 465,
-		secure: true,
-		auth: {
-			user: process.env.MAILER_SMTP_USER || "",
-			pass: process.env.MAILER_SMTP_PASSWORD || "",
-		},
-	});
+	try {
+		const transporter = nodemailer.createTransport({
+			host: process.env.MAILER_SMTP_HOST || "",
+			port: 465,
+			secure: true,
+			auth: {
+				user: process.env.MAILER_SMTP_USER || "",
+				pass: process.env.MAILER_SMTP_PASSWORD || "",
+			},
+		});
 
-	return transporter.sendMail({
-		from: process.env.MAILER_SENDER_ADDRESS || "",
-		to: email,
-		subject: `${appConfig.appName} account activation`,
-		text,
-		html,
-	});
+		const result = await transporter.sendMail({
+			from: process.env.MAILER_SENDER_ADDRESS || "",
+			to: email,
+			subject: `${appConfig.appName} account activation`,
+			text,
+			html,
+		});
+
+		Promise.resolve(result);
+	} catch {
+		return Promise.reject(createHttpError(500, "Failed to send activation email."));
+	}
 };
