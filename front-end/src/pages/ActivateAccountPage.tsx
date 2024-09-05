@@ -1,65 +1,79 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { pageItems } from "../config/pageItems";
 import AuthLayout from "../components/AuthLayout/AuthLayout";
 import { Navigate, useSearchParams } from "react-router-dom";
-import { useMutation } from "react-query";
 import { activateAccount } from "../services/AuthService";
 import { isEmail } from "../utils/strings";
 import { ResponseError } from "../types/error";
 import { ErrorCodes } from "../constants";
 import RouterLink from "../components/RouterLink/RouterLink";
+import { useAuth } from "../hooks/auth";
 
 export default function ActivateAccountPage() {
+	// Ensures the mutation is triggered only once when in "strict mode"
+	const mutationTriggeredRef = useRef(false);
 	const [searchParams] = useSearchParams();
 	const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
+	const [isLoading, setIsLoading] = useState<ReactNode>(true);
+
+	const { isLoggedIn } = useAuth();
 
 	const email = searchParams.get("email") || "";
 	const activationToken = searchParams.get("activationToken") || "";
 	const searchParamsExist = email && activationToken;
 
-	const { isLoading, mutate } = useMutation<Response, ResponseError>({
-		mutationFn: () => activateAccount(email, activationToken),
-		onError: error => {
-			if (error.message === ErrorCodes.accountCannotBeActivated) {
-				setErrorMessage(
-					<>
-						<strong>Your account cannot be activated.</strong> Maybe your activation link has
-						expired.
-						<br />
-						<br />
-						Please, <RouterLink to={pageItems.signup.url}>try to sign up anew</RouterLink>.
-					</>
-				);
-			} else {
-				setErrorMessage(
-					<>
-						<strong>Something didn't work</strong> as expected, please try again later.
-					</>
-				);
-			}
-		},
-	});
-
 	useEffect(() => {
-		if (!searchParamsExist) {
+		if (isLoggedIn || !searchParamsExist || mutationTriggeredRef.current) {
 			return;
 		}
 
-		if (!isEmail(email) || /[^a-z0-9-]$/i.test(activationToken)) {
-			setErrorMessage(
-				<>
-					Your account cannot be activated.
-					<br />
-					Please check your activation link and retry.
-				</>
-			);
+		const triggerActivation = async () => {
+			try {
+				if (isEmail(email) && /^[a-z0-9-]+$/i.test(activationToken)) {
+					await activateAccount(email, activationToken);
+				} else {
+					setErrorMessage(
+						<>
+							Your account cannot be activated.
+							<br />
+							Please check your activation link and retry.
+						</>
+					);
+				}
+			} catch (err) {
+				const error = err as ResponseError;
 
-			return;
-		}
+				if (error.message === ErrorCodes.accountCannotBeActivated) {
+					setErrorMessage(
+						<>
+							<strong>Your account cannot be activated.</strong> Maybe your activation link has
+							expired.
+							<br />
+							<br />
+							Please, <RouterLink to={pageItems.signup.url}>try to sign up anew</RouterLink>.
+						</>
+					);
+				} else {
+					setErrorMessage(
+						<>
+							<strong>Something didn't work</strong> as expected, please try again later.
+						</>
+					);
+				}
+			}
 
-		mutate();
-	}, []);
+			setIsLoading(false);
+		};
+
+		triggerActivation();
+
+		mutationTriggeredRef.current = true;
+	}, [isLoggedIn]);
+
+	if (isLoggedIn) {
+		return <Navigate to={pageItems.admin.url} />;
+	}
 
 	if (!searchParamsExist) {
 		return <Navigate to={pageItems.signup.url} />;
