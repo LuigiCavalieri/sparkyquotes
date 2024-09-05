@@ -59,7 +59,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 			await db.getPool()?.query({
 				text:
 					"UPDATE users " +
-					"SET name = $2, pw_hash = $3, activation_token = $4, activation_token_expiry = ( NOW() + INTERVAL '10 minutes' ) " +
+					"SET name = $2, pw_hash = $3, activation_token = $4, activation_token_expiry = ( NOW() + INTERVAL '15 minutes' ) " +
 					"WHERE email = $1",
 				values: [email, name, pwHash, activationToken],
 			});
@@ -67,7 +67,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 			await db.getPool()?.query({
 				text:
 					"INSERT INTO users ( email, name, pw_hash, activation_token, activation_token_expiry ) " +
-					"SELECT $1, $2, $3, $4,( NOW() + INTERVAL '10 minutes' )",
+					"SELECT $1, $2, $3, $4,( NOW() + INTERVAL '15 minutes' )",
 				values: [email, name, pwHash, activationToken],
 			});
 		}
