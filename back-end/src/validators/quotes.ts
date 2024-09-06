@@ -1,5 +1,5 @@
 import { body, query } from "express-validator";
-import { isPersonName, isPositiveInt, validate } from ".";
+import { isPositiveInt, validate } from ".";
 import appConfig from "../config/appConfig";
 
 const validatePage = query("page")
@@ -17,11 +17,7 @@ const validateAuthor = body("author")
 	.optional()
 	.trim()
 	.isLength({ max: appConfig.authorMaxLength })
-	.withMessage(`Cannot exceed ${appConfig.authorMaxLength} characters.`)
-	.custom(value => {
-		return !value || isPersonName(value);
-	})
-	.withMessage("Cannot include special characters.");
+	.withMessage(`Cannot exceed ${appConfig.authorMaxLength} characters.`);
 
 export const validateGetQuotes = validate([validatePage, validateItemsPerPage]);
 
