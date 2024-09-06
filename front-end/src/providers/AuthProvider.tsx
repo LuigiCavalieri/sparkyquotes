@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AuthContext, AuthFunctionCallbacks } from "../contexts/AuthContext";
 import { UserInfo } from "../types/user";
 import { getStorageItem, removeStorageItem, setStorageItem } from "../library/local-storage";
@@ -109,7 +109,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 		resetSignupMutation();
 	}, [pathname, resetLoginMutation, resetSignupMutation]);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (getStorageItem("isLoggedIn")) {
 			setShouldFetch(true);
 		}
