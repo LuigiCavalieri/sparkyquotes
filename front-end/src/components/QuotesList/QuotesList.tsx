@@ -102,6 +102,7 @@ export default function QuotesList() {
 			{showSearchField && (
 				<TextField
 					type="search"
+					name="searchKeywords"
 					outerClassName="mb-4"
 					placeholder="Search by keywords"
 					value={searchString}
