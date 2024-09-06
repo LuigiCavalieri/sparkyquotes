@@ -66,7 +66,7 @@ export default function ActivateAccountPage() {
 		triggerActivation();
 
 		mutationTriggeredRef.current = true;
-	}, []);
+	}, [searchParamsExist, email, activationToken]);
 
 	if (!searchParamsExist) {
 		return <Navigate to={pageItems.signup.url} />;
