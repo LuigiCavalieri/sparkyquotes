@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { db } from "../db";
-import { Quote, QuoteWithoutUserId, RandomQuote } from "../types/quote";
+import { QuoteWithoutUserId, RandomQuote } from "../types/quote";
 import appConfig from "../config/appConfig";
 import { isPersonName } from "../validators";
 import createHttpError from "http-errors";
@@ -93,7 +93,7 @@ export const addQuote = async (req: Request, res: Response, next: NextFunction) 
 	}
 };
 
-export const getRandomQuote = async (req: Request, res: Response, next: NextFunction) => {
+export const getRandomQuote = async (_req: Request, res: Response, next: NextFunction) => {
 	try {
 		const url = String(process.env.NINJAS_API_URL || "");
 		const apiKey = String(process.env.NINJAS_API_KEY || "");
