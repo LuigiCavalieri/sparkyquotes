@@ -11,8 +11,10 @@ export const validateInput = (
 	let errorMsg = "";
 
 	switch (inputType) {
-		case "text":
-			if (/[^.\s\p{Letter}'0-9_-]/iu.test(value)) {
+		case "name":
+			regex = new RegExp(`[^${appConfig.authorNameAllowedCharsRegex}]`, "iu");
+
+			if (regex.test(value)) {
 				errorMsg = "Cannot include special characters.";
 			}
 			break;

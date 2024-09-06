@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 
-export type TextFieldInputTypes = "text" | "email" | "password" | "search";
+export type TextFieldInputTypes = "name" | "email" | "password" | "search";
 
 export interface TextFieldProps {
 	required?: boolean;

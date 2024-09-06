@@ -5,6 +5,7 @@ interface AppConfig {
 	passwordMinLength: number;
 	authorNameMaxLength: number;
 	authorDefaultName: string;
+	authorNameAllowedCharsRegex: string;
 	quotesPerPage: number;
 	copyFeedbackTimeout: number;
 	reactQueryStaleTime: number;
@@ -17,6 +18,7 @@ const appConfig: Readonly<AppConfig> = {
 	passwordMinLength: 8,
 	authorNameMaxLength: 100,
 	authorDefaultName: "anonymous",
+	authorNameAllowedCharsRegex: ".\\s\\p{Letter}'0-9_-",
 	quotesPerPage: 5,
 	copyFeedbackTimeout: 3000,
 	reactQueryStaleTime: Infinity,

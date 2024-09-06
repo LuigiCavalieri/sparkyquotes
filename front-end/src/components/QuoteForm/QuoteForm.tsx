@@ -64,7 +64,7 @@ export default function QuoteForm() {
 					onChange={handleOnChangeTextarea}
 				/>
 				<TextField
-					type="text"
+					type="name"
 					name="author"
 					placeholder="by 'anonymous'"
 					validate={false}

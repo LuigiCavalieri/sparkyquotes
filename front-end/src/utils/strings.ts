@@ -2,7 +2,7 @@
  * Converts a string's casing to title case.
  */
 export const toTitleCase = (str: string) => {
-	const words = str.split(" ");
+	const words = String(str).split(" ");
 
 	return words
 		.map(word => {

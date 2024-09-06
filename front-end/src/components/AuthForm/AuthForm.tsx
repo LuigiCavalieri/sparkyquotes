@@ -136,7 +136,7 @@ const getFieldsInfo = (isSignupForm: boolean) => {
 		info.name = {
 			value: "",
 			canBeValidated: true,
-			type: "text",
+			type: "name",
 			name: "name",
 			shortDescription: "Your Name",
 		};
