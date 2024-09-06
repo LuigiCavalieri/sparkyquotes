@@ -11,7 +11,7 @@ export default function QuoteForm() {
 	const formRef = useRef<HTMLFormElement | null>(null);
 	const [submitEnabled, setSubmitEnabled] = useState(false);
 
-	const { isError, isLoading, mutate } = useSaveQuote({
+	const { isError, isLoading, error, mutate } = useSaveQuote({
 		onSuccess: () => {
 			if (formRef.current) {
 				formRef.current.reset();
@@ -46,7 +46,7 @@ export default function QuoteForm() {
 		<Card>
 			{isError && (
 				<ErrorMessage canBeDismissed className="mt-2">
-					Save failed. Please try again.
+					{error.message}
 				</ErrorMessage>
 			)}
 			<form
