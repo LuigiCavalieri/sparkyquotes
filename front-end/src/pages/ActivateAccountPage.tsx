@@ -8,7 +8,6 @@ import { isEmail } from "../utils/strings";
 import { ResponseError } from "../types/error";
 import { ErrorCodes } from "../constants";
 import RouterLink from "../components/RouterLink/RouterLink";
-import { useAuth } from "../hooks/auth";
 
 export default function ActivateAccountPage() {
 	// Ensures the mutation is triggered only once when in "strict mode"
@@ -17,14 +16,12 @@ export default function ActivateAccountPage() {
 	const [errorMessage, setErrorMessage] = useState<ReactNode>(null);
 	const [isLoading, setIsLoading] = useState<ReactNode>(true);
 
-	const { isLoggedIn } = useAuth();
-
 	const email = searchParams.get("email") || "";
 	const activationToken = searchParams.get("activationToken") || "";
 	const searchParamsExist = email && activationToken;
 
 	useEffect(() => {
-		if (isLoggedIn || !searchParamsExist || mutationTriggeredRef.current) {
+		if (!searchParamsExist || mutationTriggeredRef.current) {
 			return;
 		}
 
@@ -69,11 +66,7 @@ export default function ActivateAccountPage() {
 		triggerActivation();
 
 		mutationTriggeredRef.current = true;
-	}, [isLoggedIn]);
-
-	if (isLoggedIn) {
-		return <Navigate to={pageItems.admin.url} />;
-	}
+	}, []);
 
 	if (!searchParamsExist) {
 		return <Navigate to={pageItems.signup.url} />;
