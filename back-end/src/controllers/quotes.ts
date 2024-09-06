@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { db } from "../db";
 import { QuoteWithoutUserId, RandomQuote } from "../types/quote";
 import appConfig from "../config/appConfig";
-import { isPersonName } from "../validators";
 import createHttpError from "http-errors";
 
 export const getQuotes = async (req: Request, res: Response, next: NextFunction) => {
