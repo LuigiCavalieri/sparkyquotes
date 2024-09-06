@@ -3,9 +3,9 @@ import appConfig from "../config/appConfig";
 import { endpointsUrl } from "../config/endpointsUrl";
 import {
 	Quote,
-	QuotesFilters,
 	QuotesRequestQueryParams,
 	QuotesResponseData,
+	QuotesSearchFilters,
 	QuoteWithoutServerGenFields,
 } from "../types/quotes";
 
@@ -39,7 +39,7 @@ export const getRandomQuote = async () => {
 	}
 };
 
-export const getQuotes = ({ page, keywords }: QuotesFilters) => {
+export const getQuotes = (page: number, { keywords }: QuotesSearchFilters) => {
 	const keywordsParamValue = keywords
 		?.split(" ")
 		.map(value => value.trim())

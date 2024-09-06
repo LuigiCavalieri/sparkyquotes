@@ -26,7 +26,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	} = useQuery<QuotesResponseData, ResponseError>({
 		keepPreviousData: true,
 		queryKey: ["quotes", pageToLoad, mainQueryFilters, samePageRefreshCounter],
-		queryFn: () => QuotesService.getQuotes({ page: pageToLoad, ...mainQueryFilters }),
+		queryFn: () => QuotesService.getQuotes(pageToLoad, mainQueryFilters),
 	});
 
 	const randomQuoteQueryState = useQuery({
