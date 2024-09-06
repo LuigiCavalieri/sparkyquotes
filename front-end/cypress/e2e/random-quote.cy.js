@@ -1,6 +1,6 @@
 describe("Random quote feature", () => {
 	beforeEach(() => {
-		cy.intercept("GET", Cypress.env("randomQuoteApiUrl")).as("getRandomQuote");
+		cy.intercept("GET", "**/quotes/random").as("getRandomQuote");
 		cy.visit("/");
 		cy.get("[data-testid='login-form']").as("loginForm");
 		cy.get("@loginForm").find("input[name='email']").type(Cypress.env("userEmail"));
