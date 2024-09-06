@@ -29,7 +29,7 @@ export default function QuotesList() {
 	const handleOnChangeSearchString = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
 			const value = event.target.value;
-			const triggerSearch = () => refreshQuotes({ page: 1, keywords: value });
+			const triggerSearch = () => refreshQuotes(1, { keywords: value });
 
 			setSearchString(value);
 
@@ -133,7 +133,7 @@ export default function QuotesList() {
 						className="mt-6 mb-2"
 						currentPage={pagination.currentPage}
 						numOfQuotes={pagination.numOfItems}
-						onClick={page => refreshQuotes({ page })}
+						onClick={page => refreshQuotes(page)}
 					/>
 				</>
 			)}

@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { RandomQuoteContentProps } from "./RandomQuoteContent.types";
 import TextButton from "../../TextButton/TextButton";
 import { useState } from "react";
+import RandomQuoteDismissButton from "../RandomQuoteDismissButton/RandomQuoteDismissButton";
 
 export default function RandomQuoteContent({
 	quote,
@@ -26,14 +27,7 @@ export default function RandomQuoteContent({
 					</em>
 				</h3>
 				<div className="flex items-center gap-2">
-					<TextButton
-						testid="random-quote-dismiss-button"
-						onClick={onClickDismiss}
-						colorClassName="text-red-700"
-						className="text-sm sm:leading-7"
-					>
-						Dismiss
-					</TextButton>
+					<RandomQuoteDismissButton onClick={onClickDismiss} />
 					<span className="text-gray-300">|</span>
 					<TextButton
 						testid="random-quote-save-button"

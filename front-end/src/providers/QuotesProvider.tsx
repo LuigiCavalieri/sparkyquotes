@@ -3,7 +3,7 @@ import { QuotesContext } from "../contexts/QuotesContext";
 import { useQuery } from "react-query";
 import * as QuotesService from "../services/QuotesService";
 import { ResponseError } from "../types/error";
-import { QuotesFilters, QuotesResponseData } from "../types/quotes";
+import { QuotesResponseData, QuotesSearchFilters } from "../types/quotes";
 
 interface QuotesProviderProps {
 	children: ReactNode;
@@ -13,8 +13,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	const [pageToLoad, setPageToLoad] = useState(1);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [samePageRefreshCounter, setSamePageRefreshCounter] = useState(0);
-	const [mainQueryFilters, setMainQueryFilters] =
-		useState<Omit<QuotesFilters, "page">>(mainQueryFiltersInitValue);
+	const [mainQueryFilters, setMainQueryFilters] = useState(mainQueryFiltersInitValue);
 	const [isRandomQuoteQueryEnabled, setIsRandomQuoteQueryEnabled] = useState(
 		radomQuoteSettingsAvailable
 	);
@@ -37,13 +36,11 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	});
 
 	const refreshQuotes = useCallback(
-		({ page, ...otherFilters }: QuotesFilters) => {
+		(page: number, searchFilters?: QuotesSearchFilters) => {
 			setPageToLoad(page);
-			setMainQueryFilters({ ...mainQueryFiltersInitValue, ...otherFilters });
+			setMainQueryFilters({ ...mainQueryFiltersInitValue, ...(searchFilters || {}) });
 
-			const otherFiltersAreSet = Boolean(Object.values(otherFilters).length);
-
-			if (page === currentPage && !otherFiltersAreSet) {
+			if (page === currentPage && !searchFilters) {
 				setSamePageRefreshCounter(value => value + 1);
 			}
 		},
@@ -93,6 +90,6 @@ const radomQuoteSettingsAvailable = Boolean(
 	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
 );
 
-const mainQueryFiltersInitValue: Omit<QuotesFilters, "page"> = {
+const mainQueryFiltersInitValue: QuotesSearchFilters = {
 	keywords: "",
 };

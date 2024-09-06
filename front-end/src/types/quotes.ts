@@ -18,7 +18,6 @@ export interface QuotesRequestQueryParams {
 	keywords?: string;
 }
 
-export interface QuotesFilters {
-	page: number;
-	keywords?: string;
+export interface QuotesSearchFilters {
+	keywords: string;
 }

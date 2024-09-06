@@ -20,9 +20,7 @@ export function useSaveQuote(callbacks?: { onSuccess?: () => void; onError?: () 
 				callbacks.onSuccess();
 			}
 
-			const pageOne = 1;
-
-			refreshQuotes({ page: pageOne });
+			refreshQuotes(1);
 			queryClient.removeQueries({ queryKey: ["quotes"] });
 		},
 		onError: () => {

@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { Quote, QuotesFilters, QuoteWithoutServerGenFields } from "../types/quotes";
+import { Quote, QuotesSearchFilters, QuoteWithoutServerGenFields } from "../types/quotes";
 import { UseQueryResult } from "react-query";
 
 export interface QuotesQueryState {
-	searchFilters: Omit<QuotesFilters, "page">;
+	searchFilters: QuotesSearchFilters;
 	isRefetching: boolean;
 	isLoading: boolean;
 	isError: boolean;
@@ -26,14 +26,14 @@ export interface QuotesContextInterface {
 		currentPage: number;
 		numOfItems: number;
 	};
-	refreshQuotes: (filters: QuotesFilters) => void;
+	refreshQuotes: (page: number, searchFilters?: QuotesSearchFilters) => void;
 }
 
 export const QuotesContext = createContext<QuotesContextInterface>({
 	quotes: [],
 	randomQuoteQueryState: {} as RandomQuoteQueryState,
 	mainQueryState: {
-		searchFilters: {},
+		searchFilters: {} as QuotesSearchFilters,
 		isLoading: false,
 		isRefetching: false,
 		isError: false,
