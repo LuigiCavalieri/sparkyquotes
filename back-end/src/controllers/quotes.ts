@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { db } from "../db";
-import { QuoteWithoutUserId } from "../types/quote";
+import { Quote, QuoteWithoutUserId, RandomQuote } from "../types/quote";
 import appConfig from "../config/appConfig";
 import { isPersonName } from "../validators";
+import createHttpError from "http-errors";
 
 export const getQuotes = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -87,6 +88,42 @@ export const addQuote = async (req: Request, res: Response, next: NextFunction) 
 		});
 
 		res.status(201).json(results.rows[0]);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getRandomQuote = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const url = String(process.env.NINJAS_API_URL || "");
+		const apiKey = String(process.env.NINJAS_API_KEY || "");
+
+		if (!(url && apiKey)) {
+			throw createHttpError(500, "Failed retrieving a new quote.");
+		}
+
+		const response = await fetch(url, {
+			headers: {
+				"X-Api-Key": apiKey,
+			},
+		});
+
+		const data = await response.json();
+
+		if (!Array.isArray(data)) {
+			throw createHttpError(500, "Failed retrieving a new quote.");
+		}
+
+		const quote: RandomQuote = {
+			content: data[0]?.quote.trim() || "",
+			author: data[0]?.author.trim() || "",
+		};
+
+		if (!quote.content) {
+			throw createHttpError(404, "No quote found.");
+		}
+
+		res.status(200).json(quote);
 	} catch (error) {
 		next(error);
 	}

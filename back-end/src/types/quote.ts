@@ -9,3 +9,4 @@ export interface Quote {
 }
 
 export type QuoteWithoutUserId = Omit<Quote, "user_id">;
+export type RandomQuote = Pick<Quote, "content" | "author">;

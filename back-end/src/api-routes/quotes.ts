@@ -8,5 +8,6 @@ const quotesRouter = express.Router();
 quotesRouter.use(authMiddleware);
 quotesRouter.get("/", validateGetQuotes, quotesController.getQuotes);
 quotesRouter.post("/", validateAddQuote, quotesController.addQuote);
+quotesRouter.get("/random", quotesController.getRandomQuote);
 
 export default quotesRouter;

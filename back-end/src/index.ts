@@ -23,7 +23,7 @@ const app = express();
 app.use(
 	cors({
 		credentials: true,
-		origin: /^http:\/\/localhost:[0-9]{4}$/,
+		origin: process.env.SPA_HOST || undefined,
 	})
 );
 app.use(helmet());

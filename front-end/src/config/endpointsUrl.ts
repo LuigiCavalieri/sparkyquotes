@@ -7,4 +7,5 @@ export const endpointsUrl = {
 	me: `${baseUrl}/me`,
 	activateAccount: `${baseUrl}/activate-account`,
 	quotes: `${baseUrl}/quotes`,
+	randomQuote: `${baseUrl}/quotes/random`,
 };

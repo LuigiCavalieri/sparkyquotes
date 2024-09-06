@@ -14,9 +14,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [samePageRefreshCounter, setSamePageRefreshCounter] = useState(0);
 	const [mainQueryFilters, setMainQueryFilters] = useState(mainQueryFiltersInitValue);
-	const [isRandomQuoteQueryEnabled, setIsRandomQuoteQueryEnabled] = useState(
-		radomQuoteSettingsAvailable
-	);
+	const [isRandomQuoteQueryEnabled, setIsRandomQuoteQueryEnabled] = useState(true);
 
 	const {
 		data: queryData,
@@ -47,10 +45,8 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 		[currentPage]
 	);
 
-	const maybeIsRandomQuoteQueryEnabled = useCallback((enabled: boolean) => {
-		if (radomQuoteSettingsAvailable) {
-			setIsRandomQuoteQueryEnabled(enabled);
-		}
+	const updateIsRandomQuoteQueryEnabled = useCallback((enabled: boolean) => {
+		setIsRandomQuoteQueryEnabled(enabled);
 	}, []);
 
 	useEffect(() => {
@@ -65,7 +61,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 				randomQuoteQueryState: {
 					...randomQuoteQueryState,
 					isEnabled: isRandomQuoteQueryEnabled,
-					updateEnabled: maybeIsRandomQuoteQueryEnabled,
+					updateEnabled: updateIsRandomQuoteQueryEnabled,
 				},
 				quotes: queryData?.quotes || [],
 				mainQueryState: {
@@ -85,10 +81,6 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 		</QuotesContext.Provider>
 	);
 }
-
-const radomQuoteSettingsAvailable = Boolean(
-	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
-);
 
 const mainQueryFiltersInitValue: QuotesSearchFilters = {
 	keywords: "",

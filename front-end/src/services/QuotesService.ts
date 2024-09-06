@@ -9,36 +9,6 @@ import {
 	QuoteWithoutServerGenFields,
 } from "../types/quotes";
 
-export const getRandomQuote = async () => {
-	const url = String(import.meta.env.VITE_NINJAS_API_URL || "");
-	const apiKey = String(import.meta.env.VITE_NINJAS_API_KEY || "");
-
-	if (!(url && apiKey)) {
-		return Promise.reject("Misconfiguration");
-	}
-
-	try {
-		const data = await GET<Array<{ quote: string; author: string }>>(url, {
-			headers: {
-				"X-Api-Key": apiKey,
-			},
-		});
-
-		if (!Array.isArray(data)) {
-			throw new Error("Unknown data structure");
-		}
-
-		const quote: QuoteWithoutServerGenFields = {
-			content: data[0]?.quote || "",
-			author: data[0]?.author || "",
-		};
-
-		return Promise.resolve(quote);
-	} catch (error) {
-		return Promise.reject(error);
-	}
-};
-
 export const getQuotes = (page: number, { keywords }: QuotesSearchFilters) => {
 	const keywordsParamValue = keywords
 		?.split(" ")
@@ -59,4 +29,8 @@ export const getQuotes = (page: number, { keywords }: QuotesSearchFilters) => {
 
 export const saveQuote = (payload: QuoteWithoutServerGenFields) => {
 	return POST<QuoteWithoutServerGenFields, Quote>(endpointsUrl.quotes, payload);
+};
+
+export const getRandomQuote = async () => {
+	return GET<QuoteWithoutServerGenFields>(endpointsUrl.randomQuote);
 };
