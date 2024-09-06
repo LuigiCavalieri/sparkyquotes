@@ -13,6 +13,8 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	const [pageToLoad, setPageToLoad] = useState(1);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [samePageRefreshCounter, setSamePageRefreshCounter] = useState(0);
+	const [mainQueryFilters, setMainQueryFilters] =
+		useState<Omit<QuotesFilters, "page">>(mainQueryFiltersInitValue);
 	const [isRandomQuoteQueryEnabled, setIsRandomQuoteQueryEnabled] = useState(
 		radomQuoteSettingsAvailable
 	);
@@ -24,8 +26,8 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 		isRefetching: isQueryRefetching,
 	} = useQuery<QuotesResponseData, ResponseError>({
 		keepPreviousData: true,
-		queryKey: ["quotes", pageToLoad, samePageRefreshCounter],
-		queryFn: () => QuotesService.getQuotes({ page: pageToLoad }),
+		queryKey: ["quotes", pageToLoad, mainQueryFilters, samePageRefreshCounter],
+		queryFn: () => QuotesService.getQuotes({ page: pageToLoad, ...mainQueryFilters }),
 	});
 
 	const randomQuoteQueryState = useQuery({
@@ -35,10 +37,13 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 	});
 
 	const refreshQuotes = useCallback(
-		({ page }: QuotesFilters) => {
+		({ page, ...otherFilters }: QuotesFilters) => {
 			setPageToLoad(page);
+			setMainQueryFilters({ ...mainQueryFiltersInitValue, ...otherFilters });
 
-			if (page === currentPage) {
+			const otherFiltersAreSet = Boolean(Object.values(otherFilters).length);
+
+			if (page === currentPage && !otherFiltersAreSet) {
 				setSamePageRefreshCounter(value => value + 1);
 			}
 		},
@@ -67,6 +72,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 				},
 				quotes: queryData?.quotes || [],
 				mainQueryState: {
+					searchFilters: mainQueryFilters,
 					isLoading: isQueryLoading,
 					isRefetching: isQueryRefetching,
 					isError: isQueryError,
@@ -86,3 +92,7 @@ export default function QuotesProvider({ children }: QuotesProviderProps) {
 const radomQuoteSettingsAvailable = Boolean(
 	import.meta.env.VITE_NINJAS_API_URL && import.meta.env.VITE_NINJAS_API_KEY
 );
+
+const mainQueryFiltersInitValue: Omit<QuotesFilters, "page"> = {
+	keywords: "",
+};

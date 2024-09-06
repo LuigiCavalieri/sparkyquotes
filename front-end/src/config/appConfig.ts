@@ -18,7 +18,7 @@ const appConfig: Readonly<AppConfig> = {
 	passwordMinLength: 8,
 	authorNameMaxLength: 100,
 	authorDefaultName: "anonymous",
-	authorNameAllowedCharsRegex: ".\\s\\p{Letter}'0-9_-",
+	authorNameAllowedCharsRegex: ".\\s\\p{Letter}0-9',_-",
 	quotesPerPage: 5,
 	copyFeedbackTimeout: 3000,
 	reactQueryStaleTime: Infinity,

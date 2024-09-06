@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { useQuotes } from "../../hooks/quotes";
 import Card from "../Card/Card";
@@ -8,12 +8,39 @@ import appConfig from "../../config/appConfig";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { CopyStatus } from "../../constants";
 import { Quote } from "../../types/quotes";
+import TextField from "../TextField/TextField";
+import { useDebounceAndThrottle } from "../../hooks/debounce-throttle";
 
 export default function QuotesList() {
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
+	const [searchString, setSearchString] = useState("");
+
+	const { debounceAndThrottle } = useDebounceAndThrottle();
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
+
+	useEffect(() => {
+		if (!mainQueryState.searchFilters.keywords) {
+			setSearchString("");
+		}
+	}, [mainQueryState.searchFilters.keywords]);
+
+	const handleOnChangeSearchString = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) => {
+			const value = event.target.value;
+			const triggerSearch = () => refreshQuotes({ page: 1, keywords: value });
+
+			setSearchString(value);
+
+			if (value.trim()) {
+				debounceAndThrottle(triggerSearch);
+			} else {
+				triggerSearch();
+			}
+		},
+		[refreshQuotes, debounceAndThrottle]
+	);
 
 	const copyToClipboard = useCallback(async (quote: Quote) => {
 		setCopiedQuoteId(quote.id);
@@ -57,6 +84,13 @@ export default function QuotesList() {
 
 	return (
 		<Card title="Your saved quotes">
+			<TextField
+				type="search"
+				outerClassName="mb-4"
+				placeholder="Search by keywords"
+				value={searchString}
+				onChange={handleOnChangeSearchString}
+			/>
 			{mainQueryState.isError && (
 				<ErrorMessage className="mt-8">
 					{"Something didn't work. Please try to "}

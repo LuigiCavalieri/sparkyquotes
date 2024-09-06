@@ -39,10 +39,16 @@ export const getRandomQuote = async () => {
 	}
 };
 
-export const getQuotes = ({ page }: QuotesFilters) => {
+export const getQuotes = ({ page, keywords }: QuotesFilters) => {
+	const keywordsParamValue = keywords
+		?.split(" ")
+		.map(value => value.trim())
+		.join("|");
+
 	const init: QuotesRequestQueryParams = {
 		page: String(page),
 		itemsPerPage: String(appConfig.quotesPerPage),
+		keywords: keywordsParamValue || "",
 	};
 
 	const paramsObj = new URLSearchParams(init as unknown as Record<string, string>);

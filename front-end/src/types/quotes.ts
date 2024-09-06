@@ -13,10 +13,12 @@ export interface QuotesResponseData {
 }
 
 export interface QuotesRequestQueryParams {
-	itemsPerPage: string;
 	page: string;
+	itemsPerPage: string;
+	keywords?: string;
 }
 
 export interface QuotesFilters {
 	page: number;
+	keywords?: string;
 }

@@ -15,7 +15,7 @@ export default function TextField({
 	placeholder,
 	maxLength,
 	disabled,
-	validate = true,
+	validate,
 	className,
 	outerClassName,
 	onChange,
@@ -103,7 +103,7 @@ export default function TextField({
 	};
 
 	const getInputType = () => {
-		if (passwordReadable || !["password", "search"].includes(type)) {
+		if (passwordReadable || ["email"].includes(type)) {
 			return "text";
 		}
 

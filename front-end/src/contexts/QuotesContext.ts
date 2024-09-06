@@ -3,6 +3,7 @@ import { Quote, QuotesFilters, QuoteWithoutServerGenFields } from "../types/quot
 import { UseQueryResult } from "react-query";
 
 export interface QuotesQueryState {
+	searchFilters: Omit<QuotesFilters, "page">;
 	isRefetching: boolean;
 	isLoading: boolean;
 	isError: boolean;
@@ -32,6 +33,7 @@ export const QuotesContext = createContext<QuotesContextInterface>({
 	quotes: [],
 	randomQuoteQueryState: {} as RandomQuoteQueryState,
 	mainQueryState: {
+		searchFilters: {},
 		isLoading: false,
 		isRefetching: false,
 		isError: false,

@@ -11,7 +11,7 @@ const appConfig: Readonly<AppConfig> = {
 	authorMaxLength: 200,
 	passwordSpecialChars: "?!_$/&.",
 	passwordMinLength: 8,
-	authorNameAllowedCharsRegex: ".\\s\\p{Letter}'0-9_-",
+	authorNameAllowedCharsRegex: ".\\s\\p{Letter}0-9',_-",
 };
 
 export default Object.freeze(appConfig);

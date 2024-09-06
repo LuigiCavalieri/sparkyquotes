@@ -15,9 +15,12 @@ const validateContent = body("content").trim().notEmpty();
 
 const validateAuthor = body("author")
 	.optional()
+	.trim()
 	.isLength({ max: appConfig.authorMaxLength })
 	.withMessage(`Cannot exceed ${appConfig.authorMaxLength} characters.`)
-	.custom(isPersonName)
+	.custom(value => {
+		return !value || isPersonName(value);
+	})
 	.withMessage("Cannot include special characters.");
 
 export const validateGetQuotes = validate([validatePage, validateItemsPerPage]);

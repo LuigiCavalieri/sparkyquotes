@@ -67,7 +67,6 @@ export default function QuoteForm() {
 					type="name"
 					name="author"
 					placeholder="by 'anonymous'"
-					validate={false}
 					disabled={isLoading}
 					maxLength={appConfig.authorNameMaxLength}
 				/>
