@@ -12,19 +12,14 @@ import TextField from "../TextField/TextField";
 import { useDebounceAndThrottle } from "../../hooks/debounce-throttle";
 
 export default function QuotesList() {
+	const { debounceAndThrottle } = useDebounceAndThrottle();
+	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
+
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const [searchString, setSearchString] = useState("");
-
-	const { debounceAndThrottle } = useDebounceAndThrottle();
-	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
-
-	useEffect(() => {
-		if (!mainQueryState.searchFilters.keywords) {
-			setSearchString("");
-		}
-	}, [mainQueryState.searchFilters.keywords]);
+	const [showSearchField, setShowSearchField] = useState(Boolean(quotes.length));
 
 	const handleOnChangeSearchString = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
@@ -70,10 +65,21 @@ export default function QuotesList() {
 		return maybeClearTimer;
 	}, []);
 
+	useEffect(() => {
+		if (quotes.length && !showSearchField) {
+			setShowSearchField(true);
+		}
+	}, [showSearchField, quotes.length]);
+
+	useEffect(() => {
+		if (!mainQueryState.searchFilters.keywords) {
+			setSearchString("");
+		}
+	}, [mainQueryState.searchFilters.keywords]);
+
 	const maybeClearTimer = () => {
 		if (timerRef.current) {
 			clearTimeout(timerRef.current);
-			console.log(1);
 		}
 	};
 
@@ -84,13 +90,6 @@ export default function QuotesList() {
 
 	return (
 		<Card title="Your saved quotes">
-			<TextField
-				type="search"
-				outerClassName="mb-4"
-				placeholder="Search by keywords"
-				value={searchString}
-				onChange={handleOnChangeSearchString}
-			/>
 			{mainQueryState.isError && (
 				<ErrorMessage className="mt-8">
 					{"Something didn't work. Please try to "}
@@ -99,6 +98,15 @@ export default function QuotesList() {
 					</button>
 					{"."}
 				</ErrorMessage>
+			)}
+			{showSearchField && (
+				<TextField
+					type="search"
+					outerClassName="mb-4"
+					placeholder="Search by keywords"
+					value={searchString}
+					onChange={handleOnChangeSearchString}
+				/>
 			)}
 			{mainQueryState.isLoading ? (
 				<p className="text-gray-500 text-sm mt-6 mb-2">Quotes are loading...</p>
