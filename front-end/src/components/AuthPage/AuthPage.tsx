@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../../hooks/auth";
 import { AuthPageProps } from "./AuthPage.types";
 import AuthForm from "../AuthForm/AuthForm";
 import { AuthFormValues } from "../AuthForm/AuthForm.types";
-import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import appConfig from "../../config/appConfig";
 import { pageItems } from "../../config/pageItems";
 import AuthLayout from "../AuthLayout/AuthLayout";
