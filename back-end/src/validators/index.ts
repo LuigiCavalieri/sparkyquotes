@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ValidationChain } from "express-validator";
 import createHttpError from "http-errors";
+import appConfig from "../config/appConfig";
 
 export const validate = (validations: ValidationChain[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,9 @@ export const validate = (validations: ValidationChain[]) => {
 };
 
 export const isPersonName = (value: string) => {
-	return /^[.\s\p{Letter}'0-9_-]+$/iu.test(value);
+	const regex = new RegExp(`^[${appConfig.authorNameAllowedCharsRegex}]+$`, "iu");
+
+	return regex.test(value);
 };
 
 export const isPositiveInt = (value: string) => {
