@@ -14,7 +14,7 @@ export default function AuthPage({ type, afterForm }: AuthPageProps) {
 	const [formDisabled, setFormDisabled] = useState(false);
 	const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-	const { isLoggedIn, isQuering, isMutating, errorMessage, doLogin, doSignup } = useAuth();
+	const { isMutating, errorMessage, doLogin, doSignup } = useAuth();
 
 	const handleOnSubmit = (formValues: AuthFormValues) => {
 		const onError = () => setFormDisabled(false);
@@ -30,14 +30,6 @@ export default function AuthPage({ type, afterForm }: AuthPageProps) {
 			doLogin(formValues, { onError });
 		}
 	};
-
-	if (isQuering) {
-		return <LoadingScreen />;
-	}
-
-	if (isLoggedIn) {
-		return <Navigate to={pageItems.admin.url} />;
-	}
 
 	return (
 		<AuthLayout>
