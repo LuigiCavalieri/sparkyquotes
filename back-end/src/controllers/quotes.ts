@@ -9,52 +9,66 @@ export const getQuotes = async (req: Request, res: Response, next: NextFunction)
 	try {
 		const { page, itemsPerPage, keywords } = req.query;
 
+		const respData = {
+			total_count: 0,
+			quotes: [],
+		};
+
+		let needles = [];
 		const limit = Number(itemsPerPage);
 		const offset = (Number(page || 1) - 1) * limit;
-		let keywordsCondition = "";
 
 		if (keywords) {
-			const needles = String(keywords)
+			needles = String(keywords)
+				.replace(/%/g, "")
 				.split("|")
-				.map(value => value.trim())
-				.filter(value => /[a-z0-9]/i.test(value) && isPersonName(value));
+				.map(value => `%${value.trim()}%`);
 
-			if (needles.length) {
-				const needlesList = needles.map(value => `'%${value.trim()}%'`).join(",");
-
-				keywordsCondition = ` AND concat_ws(' ', content, author) ILIKE ANY( ARRAY[${needlesList}] ) `;
+			if (!needles.length) {
+				return res.json(respData);
 			}
 		}
 
+		const getValuesAndKeywordsCondition = (values: unknown[]) => {
+			const _values = [...values];
+			let keywordsCondition = "";
+
+			if (needles.length) {
+				_values.push(needles);
+
+				keywordsCondition = ` AND concat_ws(' ', content, author) ILIKE ANY( $${_values.length} ) `;
+			}
+
+			return { values: _values, keywordsCondition };
+		};
+
+		const countQueryParams = getValuesAndKeywordsCondition([req.auth.userId]);
 		const countResults = await db.getPool()?.query<{ total_count: string }>({
 			text:
 				"SELECT COUNT( id ) AS total_count " +
 				"FROM quotes " +
 				"WHERE user_id = $1 " +
-				keywordsCondition,
-			values: [req.auth.userId],
+				countQueryParams.keywordsCondition,
+			values: countQueryParams.values,
 		});
 
-		const total_count = Number(countResults.rows[0].total_count);
-		const respData = {
-			total_count,
-			quotes: [],
-		};
+		respData.total_count = Number(countResults.rows[0].total_count);
 
-		if (!total_count) {
+		if (!respData.total_count) {
 			return res.json(respData);
 		}
 
+		const queryParams = getValuesAndKeywordsCondition([req.auth.userId, offset, limit]);
 		const results = await db.getPool()?.query<QuoteWithoutUserId>({
 			text:
 				"SELECT id, content, author, created_at " +
 				"FROM quotes " +
 				"WHERE user_id = $1 " +
-				keywordsCondition +
+				queryParams.keywordsCondition +
 				"ORDER BY created_at DESC " +
 				"OFFSET $2 " +
 				"LIMIT $3",
-			values: [req.auth.userId, offset, limit],
+			values: queryParams.values,
 		});
 
 		if (!results.rowCount) {

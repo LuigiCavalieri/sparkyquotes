@@ -11,7 +11,8 @@ import {
 
 export const getQuotes = (page: number, { keywords }: QuotesSearchFilters) => {
 	const keywordsParamValue = keywords
-		?.split(" ")
+		?.replace(/|/g, "")
+		.split(" ")
 		.map(value => value.trim())
 		.join("|");
 
