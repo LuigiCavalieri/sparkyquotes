@@ -7,7 +7,7 @@ interface AppConfig {
 	authorDefaultName: string;
 	authorNameAllowedCharsRegex: string;
 	quotesPerPage: number;
-	copyFeedbackTimeout: number;
+	feedbackTimeout: number;
 	reactQueryStaleTime: number;
 }
 
@@ -20,7 +20,7 @@ const appConfig: Readonly<AppConfig> = {
 	authorDefaultName: "anonymous",
 	authorNameAllowedCharsRegex: ".\\s\\p{Letter}0-9',_-",
 	quotesPerPage: 5,
-	copyFeedbackTimeout: 3000,
+	feedbackTimeout: 3000,
 	reactQueryStaleTime: Infinity,
 };
 

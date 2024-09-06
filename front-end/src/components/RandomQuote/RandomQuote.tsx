@@ -1,22 +1,44 @@
+import { useCallback, useRef, useState } from "react";
 import Card from "../Card/Card";
 import { useQuotes, useSaveQuote } from "../../hooks/quotes";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import RandomQuoteContent from "./RandomQuoteContent/RandomQuoteContent";
 import RandomQuoteDismissButton from "./RandomQuoteDismissButton/RandomQuoteDismissButton";
-import { useCallback } from "react";
+import appConfig from "../../config/appConfig";
 
 export default function RandomQuote() {
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [showSaved, setShowSaved] = useState(false);
+
 	const { randomQuoteQueryState } = useQuotes();
-	const { isError: isMutationError, isLoading: isMutationLoading, mutate } = useSaveQuote();
+	const {
+		isError: isMutationError,
+		isLoading: isMutationLoading,
+		mutate,
+	} = useSaveQuote({
+		onSuccess: () => {
+			showFeedback();
+		},
+	});
+
+	const onClickDismiss = useCallback(() => {
+		randomQuoteQueryState.updateEnabled(false);
+	}, [randomQuoteQueryState]);
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		location.reload();
 	};
 
-	const onClickDismiss = useCallback(() => {
-		randomQuoteQueryState.updateEnabled(false);
-	}, [randomQuoteQueryState]);
+	const showFeedback = () => {
+		setShowSaved(true);
+
+		timerRef.current = setTimeout(() => {
+			timerRef.current = null;
+
+			setShowSaved(false);
+		}, appConfig.feedbackTimeout);
+	};
 
 	if (!randomQuoteQueryState.isEnabled) {
 		return null;
@@ -45,8 +67,8 @@ export default function RandomQuote() {
 			) : (
 				<RandomQuoteContent
 					quote={randomQuoteQueryState.data}
+					showSaved={showSaved}
 					isMutationLoading={isMutationLoading}
-					isQueryRefetching={randomQuoteQueryState.isRefetching}
 					onClickSave={() => mutate(randomQuoteQueryState.data)}
 					onClickDismiss={onClickDismiss}
 				/>

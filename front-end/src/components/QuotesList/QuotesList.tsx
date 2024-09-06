@@ -58,7 +58,7 @@ export default function QuotesList() {
 			timerRef.current = null;
 
 			setCopyStatus(CopyStatus.waiting);
-		}, appConfig.copyFeedbackTimeout);
+		}, appConfig.feedbackTimeout);
 	}, []);
 
 	useEffect(() => {

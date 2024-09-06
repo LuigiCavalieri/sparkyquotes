@@ -6,7 +6,7 @@ import RandomQuoteDismissButton from "../RandomQuoteDismissButton/RandomQuoteDis
 
 export default function RandomQuoteContent({
 	quote,
-	isQueryRefetching,
+	showSaved,
 	isMutationLoading,
 	onClickDismiss,
 	onClickSave,
@@ -16,11 +16,7 @@ export default function RandomQuoteContent({
 	return (
 		<>
 			<div className="flex justify-between items-start gap-4">
-				<h3
-					className={classNames("font-semibold text-sm sm:text-base", {
-						"opacity-50": isQueryRefetching,
-					})}
-				>
+				<h3 className="font-semibold text-sm sm:text-base">
 					{"You may like this quote by "}
 					<em className="text-sky-900" data-testid="random-quote-author">
 						{quote.author}
@@ -29,27 +25,28 @@ export default function RandomQuoteContent({
 				<div className="flex items-center gap-2">
 					<RandomQuoteDismissButton onClick={onClickDismiss} />
 					<span className="text-gray-300">|</span>
-					<TextButton
-						testid="random-quote-save-button"
-						disabled={isMutationLoading || isQueryRefetching}
-						onClick={onClickSave}
-						className={classNames("text-sm sm:leading-7", { "opacity-50": isMutationLoading })}
-					>
-						{isMutationLoading ? "Saving..." : <span className="font-medium">Save</span>}
-					</TextButton>
+					<div className="text-sm font-medium sm:leading-7">
+						{isMutationLoading ? (
+							<span className="font-normal opacity-50">Saving...</span>
+						) : showSaved ? (
+							<span className="text-green-700">Saved!</span>
+						) : (
+							<TextButton testid="random-quote-save-button" onClick={onClickSave}>
+								Save
+							</TextButton>
+						)}
+					</div>
 				</div>
 			</div>
 			<blockquote
 				data-testid="random-quote-content"
 				className={classNames("mt-4 sm:block quotes", {
-					"opacity-50": isQueryRefetching,
 					hidden: hiddenOnMobile,
 				})}
 			>
 				{quote.content}
 			</blockquote>
 			<TextButton
-				disabled={isQueryRefetching}
 				onClick={() => setHiddenOnMobile(value => !value)}
 				className={classNames("text-sm sm:hidden", { "inline-block": hiddenOnMobile })}
 			>

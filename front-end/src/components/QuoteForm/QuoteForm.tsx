@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState, FormEvent } from "react";
+import { ChangeEvent, useRef, useState, FormEvent, useEffect } from "react";
 import appConfig from "../../config/appConfig";
 import { useSaveQuote } from "../../hooks/quotes";
 import SubmitButton from "../SubmitButton/SubmitButton";
@@ -9,18 +9,39 @@ import { QuoteWithoutServerGenFields } from "../../types/quotes";
 
 export default function QuoteForm() {
 	const formRef = useRef<HTMLFormElement | null>(null);
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [submitEnabled, setSubmitEnabled] = useState(false);
+	const [showSaved, setShowSaved] = useState(false);
 
 	const { isError, isLoading, error, mutate } = useSaveQuote({
 		onSuccess: () => {
 			if (formRef.current) {
 				formRef.current.reset();
+				showFeedback();
 			}
 		},
 		onError: () => {
 			setSubmitEnabled(true);
 		},
 	});
+
+	useEffect(() => {
+		return () => {
+			if (timerRef.current) {
+				clearTimeout(timerRef.current);
+			}
+		};
+	}, []);
+
+	const showFeedback = () => {
+		setShowSaved(true);
+
+		timerRef.current = setTimeout(() => {
+			timerRef.current = null;
+
+			setShowSaved(false);
+		}, appConfig.feedbackTimeout);
+	};
 
 	const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -70,9 +91,12 @@ export default function QuoteForm() {
 					disabled={isLoading}
 					maxLength={appConfig.authorNameMaxLength}
 				/>
-				<SubmitButton disabled={!submitEnabled || isLoading} className="justify-self-end w-1/4">
-					{isLoading ? "Saving..." : "Save"}
-				</SubmitButton>
+				<div className="flex items-center justify-end gap-2">
+					{showSaved && <span className="font-medium text-green-700 text-sm">Saved!</span>}
+					<SubmitButton disabled={!submitEnabled || isLoading} className="w-1/4">
+						{isLoading ? "Saving..." : "Save"}
+					</SubmitButton>
+				</div>
 			</form>
 		</Card>
 	);
