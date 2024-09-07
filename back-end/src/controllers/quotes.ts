@@ -21,6 +21,7 @@ export const getQuotes = async (req: Request, res: Response, next: NextFunction)
 			needles = String(keywords)
 				.replace(/%/g, "")
 				.split("|")
+				.filter(value => Boolean(value.trim()))
 				.map(value => `%${value.trim()}%`);
 
 			if (!needles.length) {
