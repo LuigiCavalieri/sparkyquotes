@@ -34,11 +34,12 @@ export const useDebounceAndThrottle = () => {
 		} else if (!timerRef.current) {
 			timerRef.current = setTimeout(() => {
 				timerRef.current = null;
+				lastCallTimeRef.current = Date.now();
 
 				if (typeof callbackRef.current === "function") {
 					callbackRef.current();
 				}
-			}, delay);
+			}, delay - elapsedTime);
 		}
 	}, []);
 
