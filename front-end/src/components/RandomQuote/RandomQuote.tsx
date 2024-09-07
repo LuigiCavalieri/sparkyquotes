@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Card from "../Card/Card";
 import { useQuotes, useSaveQuote } from "../../hooks/quotes";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
@@ -8,36 +8,49 @@ import appConfig from "../../config/appConfig";
 
 export default function RandomQuote() {
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const [showSaved, setShowSaved] = useState(false);
+	const [showOptimisticSaved, setShowOptimisticSaved] = useState(false);
 
 	const { randomQuoteQueryState } = useQuotes();
-	const {
-		isError: isMutationError,
-		isLoading: isMutationLoading,
-		mutate,
-	} = useSaveQuote({
-		onSuccess: () => {
-			showFeedback();
+	const { isError: isMutationError, mutate } = useSaveQuote({
+		onError: () => {
+			maybeClearTimer();
+			setShowOptimisticSaved(false);
 		},
 	});
 
-	const onClickDismiss = useCallback(() => {
+	const handleOnClickSave = useCallback(() => {
+		if (randomQuoteQueryState.data) {
+			mutate(randomQuoteQueryState.data);
+		}
+
+		setShowOptimisticSaved(true);
+
+		timerRef.current = setTimeout(() => {
+			timerRef.current = null;
+
+			setShowOptimisticSaved(false);
+		}, appConfig.feedbackTimeout);
+	}, [randomQuoteQueryState.data]);
+
+	const handleOnClickDismiss = useCallback(() => {
 		randomQuoteQueryState.updateEnabled(false);
 	}, [randomQuoteQueryState]);
+
+	useEffect(() => {
+		return maybeClearTimer;
+	}, []);
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		location.reload();
 	};
 
-	const showFeedback = () => {
-		setShowSaved(true);
+	const maybeClearTimer = () => {
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
 
-		timerRef.current = setTimeout(() => {
 			timerRef.current = null;
-
-			setShowSaved(false);
-		}, appConfig.feedbackTimeout);
+		}
 	};
 
 	if (!randomQuoteQueryState.isEnabled) {
@@ -62,15 +75,14 @@ export default function RandomQuote() {
 							{"."}
 						</p>
 					</div>
-					<RandomQuoteDismissButton className="self-start" onClick={onClickDismiss} />
+					<RandomQuoteDismissButton className="self-start" onClick={handleOnClickDismiss} />
 				</div>
 			) : (
 				<RandomQuoteContent
 					quote={randomQuoteQueryState.data}
-					showSaved={showSaved}
-					isMutationLoading={isMutationLoading}
-					onClickSave={() => mutate(randomQuoteQueryState.data)}
-					onClickDismiss={onClickDismiss}
+					showSaved={showOptimisticSaved}
+					onClickSave={handleOnClickSave}
+					onClickDismiss={handleOnClickDismiss}
 				/>
 			)}
 		</Card>

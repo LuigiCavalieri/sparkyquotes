@@ -7,7 +7,6 @@ import RandomQuoteDismissButton from "../RandomQuoteDismissButton/RandomQuoteDis
 export default function RandomQuoteContent({
 	quote,
 	showSaved,
-	isMutationLoading,
 	onClickDismiss,
 	onClickSave,
 }: RandomQuoteContentProps) {
@@ -26,9 +25,7 @@ export default function RandomQuoteContent({
 					<RandomQuoteDismissButton onClick={onClickDismiss} />
 					<span className="text-gray-300">|</span>
 					<div className="text-sm font-medium sm:leading-7">
-						{isMutationLoading ? (
-							<span className="font-normal opacity-50">Saving...</span>
-						) : showSaved ? (
+						{showSaved ? (
 							<span className="text-green-700">Saved!</span>
 						) : (
 							<TextButton testid="random-quote-save-button" onClick={onClickSave}>
