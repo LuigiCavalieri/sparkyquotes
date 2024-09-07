@@ -35,7 +35,9 @@ export const getQuotes = async (req: Request, res: Response, next: NextFunction)
 			if (needles.length) {
 				_values.push(needles);
 
-				keywordsCondition = ` AND concat_ws(' ', content, author) ILIKE ANY( $${_values.length} ) `;
+				keywordsCondition =
+					` AND concat_ws(' ', content, COALESCE( author, '${appConfig.authorDefaultName}' ) ) ` +
+					`ILIKE ANY( $${_values.length} ) `;
 			}
 
 			return { values: _values, keywordsCondition };
@@ -91,6 +93,7 @@ export const addQuote = async (req: Request, res: Response, next: NextFunction) 
 		author = String(author || "")
 			.replace(regex, "")
 			.trim();
+		author = author || null;
 
 		const results = await db.getPool()?.query<QuoteWithoutUserId>({
 			text:

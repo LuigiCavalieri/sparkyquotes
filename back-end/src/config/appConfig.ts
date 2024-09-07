@@ -3,6 +3,7 @@ interface AppConfig {
 	authorMaxLength: number;
 	passwordSpecialChars: string;
 	passwordMinLength: number;
+	authorDefaultName: string;
 	authorNameAllowedCharsRegex: string;
 }
 
@@ -11,6 +12,7 @@ const appConfig: Readonly<AppConfig> = {
 	authorMaxLength: 200,
 	passwordSpecialChars: "?!_$/&.",
 	passwordMinLength: 8,
+	authorDefaultName: "anonymous",
 	authorNameAllowedCharsRegex: ".\\s\\p{Letter}0-9',_-",
 };
 
