@@ -25,7 +25,7 @@ export const sendAccountActivationEmail = async ({
 	try {
 		const transporter = nodemailer.createTransport({
 			host: process.env.MAILER_SMTP_HOST || "",
-			port: 465,
+			port: Number(process.env.MAILER_SMTP_PORT || 465),
 			secure: true,
 			auth: {
 				user: process.env.MAILER_SMTP_USER || "",
@@ -42,7 +42,9 @@ export const sendAccountActivationEmail = async ({
 		});
 
 		Promise.resolve(result);
-	} catch {
+	} catch (error) {
+		console.log(error);
+
 		return Promise.reject(createHttpError(500, "Failed to send activation email."));
 	}
 };

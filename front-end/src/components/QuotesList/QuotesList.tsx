@@ -45,7 +45,9 @@ export default function QuotesList() {
 				throw new Error();
 			}
 
-			await navigator.clipboard.writeText(`${quote.content}\n( ${quote.author} )`);
+			const author = quote.author || appConfig.authorDefaultName;
+
+			await navigator.clipboard.writeText(`${quote.content}\n( ${author} )`);
 
 			setCopyStatus(CopyStatus.copied);
 		} catch {

@@ -1,4 +1,6 @@
 describe("Search-by-keywords feature", () => {
+	const defaultAuthorName = Cypress.env("authorDefaultName");
+
 	beforeEach(() => {
 		cy.intercept("POST", "**/quotes").as("saveQuote");
 		cy.intercept("GET", "**/quotes?**").as("getQuotes");
@@ -10,6 +12,7 @@ describe("Search-by-keywords feature", () => {
 		cy.get("@loginForm").find("button[type='submit']").click();
 
 		cy.get("[data-testid='quote-form']").as("quoteForm").should("exist");
+		cy.wait("@getQuotes");
 	});
 
 	it("performs a search-by-keywords both in the quotes' content and their author field", () => {
@@ -80,5 +83,14 @@ describe("Search-by-keywords feature", () => {
 		cy.wait(2000); // Gives React the time to update the UI.
 		cy.get("@searchField").should("have.value", "");
 		cy.get("@quotesList").find("blockquote").first().should("have.text", resetTestContent);
+	});
+
+	it(`searches for anonymous quotes if the user enters '${defaultAuthorName}'`, () => {
+		cy.get("input[name='searchKeywords']").as("searchField").should("exist");
+		cy.get("[data-testid='quotes-list']").as("quotesList").should("exist");
+
+		cy.get("@searchField").type(defaultAuthorName);
+		cy.wait(5000);
+		cy.get("@quotesList").find("figcaption").first().should("have.text", defaultAuthorName);
 	});
 });

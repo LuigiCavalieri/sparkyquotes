@@ -4,7 +4,7 @@ export interface Quote {
 	id: number;
 	user_id: Pick<User, "id">;
 	content: string;
-	author: string;
+	author: string | null;
 	created_at: string;
 }
 

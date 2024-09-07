@@ -1,7 +1,7 @@
 export interface Quote {
 	id: string;
 	content: string;
-	author: string;
+	author: string | null;
 	created_at: string;
 }
 
