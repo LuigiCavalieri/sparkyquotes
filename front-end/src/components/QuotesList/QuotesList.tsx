@@ -142,6 +142,8 @@ export default function QuotesList() {
 			)}
 			{mainQueryState.isLoading ? (
 				<p className="text-gray-500 text-sm mt-6 mb-2">Quotes are loading...</p>
+			) : !quotes.length && isSearching ? (
+				<p className="text-gray-500 text-sm mt-6 mb-2">Searching...</p>
 			) : !quotes.length ? (
 				<p className="text-sm mt-6 mb-2">No quotes found.</p>
 			) : (
