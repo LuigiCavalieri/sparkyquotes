@@ -7,7 +7,6 @@ export default function RandomQuoteDismissButton({ className, ...otherProps }: T
 		<TextButton
 			{...otherProps}
 			testid="random-quote-dismiss-button"
-			colorClassName="text-red-700"
 			className={classNames("text-sm sm:leading-7", className)}
 		>
 			Dismiss
