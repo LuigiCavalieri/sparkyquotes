@@ -30,7 +30,7 @@ export default function RandomQuote() {
 
 			setShowOptimisticSaved(false);
 		}, appConfig.feedbackTimeout);
-	}, [randomQuoteQueryState.data]);
+	}, [mutate, randomQuoteQueryState.data]);
 
 	const handleOnClickDismiss = useCallback(() => {
 		randomQuoteQueryState.updateEnabled(false);
