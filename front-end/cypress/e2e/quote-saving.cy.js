@@ -32,10 +32,6 @@ describe("Saving feature", () => {
 		cy.get("[data-testid='quotes-list']").as("quotesList");
 		cy.get("@quotesList").should("exist");
 		cy.get("@quotesList").find("figcaption").first().should("have.text", quote.author);
-		cy.get("@quotesList")
-			.find("blockquote")
-			.first()
-			.invoke("text")
-			.should("be.equal", quote.content);
+		cy.get("@quotesList").find("blockquote").first().should("have.text", quote.content);
 	});
 });

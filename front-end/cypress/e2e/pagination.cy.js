@@ -28,11 +28,7 @@ describe("Pagination feature", () => {
 			}
 
 			cy.get("@quotesList").find("li").first().find("figcaption").should("have.text", quote.author);
-			cy.get("@quotesList")
-				.find("blockquote")
-				.first()
-				.invoke("text")
-				.should("be.equal", quote.content);
+			cy.get("@quotesList").find("blockquote").first().should("have.text", quote.content);
 		}
 
 		cy.get("[data-testid='next-page-button']").click();
