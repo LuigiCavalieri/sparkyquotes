@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import { AuthFormFieldsInfo, AuthFormProps, AuthFormValues } from "./AuthForm.types";
-
 import TextField from "../TextField/TextField";
 import SubmitButton from "../SubmitButton/SubmitButton";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
