@@ -26,11 +26,12 @@ export default function QuotesList() {
 	const handleOnChangeSearchString = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
 			const value = event.target.value;
-			const triggerSearch = () => refreshQuotes(1, { keywords: value });
+			const trimmedValue = value.trim();
+			const triggerSearch = () => refreshQuotes(1, { keywords: trimmedValue });
 
 			setSearchString(value);
 
-			if (!value.trim()) {
+			if (!trimmedValue) {
 				triggerSearch();
 
 				return;
@@ -175,7 +176,7 @@ export default function QuotesList() {
 						className="mt-6 mb-2"
 						currentPage={pagination.currentPage}
 						numOfQuotes={pagination.numOfItems}
-						onClick={page => refreshQuotes(page)}
+						onClick={page => refreshQuotes(page, { keywords: searchString.trim() })}
 					/>
 				</>
 			)}
