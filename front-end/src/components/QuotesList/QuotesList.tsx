@@ -95,14 +95,6 @@ export default function QuotesList() {
 		}
 	}, [mainQueryState.searchFilters.keywords]);
 
-	useEffect(() => {
-		if (searchTimerRef.current) {
-			return;
-		}
-
-		setIsSearching(mainQueryState.isRefetching);
-	}, [mainQueryState.isRefetching]);
-
 	const maybeClearSearchTimer = () => {
 		if (searchTimerRef.current) {
 			clearTimeout(searchTimerRef.current);
@@ -152,7 +144,7 @@ export default function QuotesList() {
 					<ol
 						data-testid="quotes-list"
 						className={classNames({
-							"opacity-50": isSearching,
+							"opacity-50": isSearching || mainQueryState.isRefetching,
 						})}
 					>
 						{quotes.map((quote, idx) => {
