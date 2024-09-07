@@ -15,11 +15,13 @@ export default function QuotesList() {
 	const { debounceAndThrottle } = useDebounceAndThrottle();
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const [searchString, setSearchString] = useState("");
 	const [showSearchField, setShowSearchField] = useState(Boolean(quotes.length));
+	const [isSearching, setIsSearching] = useState(false);
 
 	const handleOnChangeSearchString = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +30,21 @@ export default function QuotesList() {
 
 			setSearchString(value);
 
-			if (value.trim()) {
-				debounceAndThrottle(triggerSearch);
-			} else {
+			if (!value.trim()) {
 				triggerSearch();
+
+				return;
 			}
+
+			setIsSearching(true);
+			debounceAndThrottle(triggerSearch, 1000);
+			maybeClearSearchTimer();
+
+			searchTimerRef.current = setTimeout(() => {
+				searchTimerRef.current = null;
+
+				setIsSearching(false);
+			}, 1000);
 		},
 		[refreshQuotes, debounceAndThrottle]
 	);
@@ -53,18 +65,21 @@ export default function QuotesList() {
 		} catch {
 			setCopyStatus(CopyStatus.error);
 		} finally {
-			maybeClearTimer();
+			maybeClearCopiedTimer();
 		}
 
-		timerRef.current = setTimeout(() => {
-			timerRef.current = null;
+		copiedTimerRef.current = setTimeout(() => {
+			copiedTimerRef.current = null;
 
 			setCopyStatus(CopyStatus.waiting);
 		}, appConfig.feedbackTimeout);
 	}, []);
 
 	useEffect(() => {
-		return maybeClearTimer;
+		return () => {
+			maybeClearSearchTimer();
+			maybeClearCopiedTimer();
+		};
 	}, []);
 
 	useEffect(() => {
@@ -79,9 +94,23 @@ export default function QuotesList() {
 		}
 	}, [mainQueryState.searchFilters.keywords]);
 
-	const maybeClearTimer = () => {
-		if (timerRef.current) {
-			clearTimeout(timerRef.current);
+	useEffect(() => {
+		if (searchTimerRef.current) {
+			return;
+		}
+
+		setIsSearching(mainQueryState.isRefetching);
+	}, [mainQueryState.isRefetching]);
+
+	const maybeClearSearchTimer = () => {
+		if (searchTimerRef.current) {
+			clearTimeout(searchTimerRef.current);
+		}
+	};
+
+	const maybeClearCopiedTimer = () => {
+		if (copiedTimerRef.current) {
+			clearTimeout(copiedTimerRef.current);
 		}
 	};
 
@@ -120,7 +149,7 @@ export default function QuotesList() {
 					<ol
 						data-testid="quotes-list"
 						className={classNames({
-							"opacity-50": mainQueryState.isRefetching,
+							"opacity-50": isSearching,
 						})}
 					>
 						{quotes.map((quote, idx) => {
