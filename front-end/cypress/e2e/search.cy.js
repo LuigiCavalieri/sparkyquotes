@@ -1,10 +1,5 @@
 describe("Search-by-keywords feature", () => {
-	it("performs a search-by-keywords both in the quotes' content and their author field", () => {
-		const quotes = [];
-		const keywords = [];
-		const now = Date.now();
-		const testAuthor = `CYPRESS.${now}`;
-
+	beforeEach(() => {
 		cy.intercept("POST", "**/quotes").as("saveQuote");
 		cy.intercept("GET", "**/quotes?**").as("getQuotes");
 
@@ -15,6 +10,13 @@ describe("Search-by-keywords feature", () => {
 		cy.get("@loginForm").find("button[type='submit']").click();
 
 		cy.get("[data-testid='quote-form']").as("quoteForm").should("exist");
+	});
+
+	it("performs a search-by-keywords both in the quotes' content and their author field", () => {
+		const quotes = [];
+		const keywords = [];
+		const now = Date.now();
+		const testAuthor = `CYPRESS.${now}`;
 
 		["one", "two", "third"].forEach(word => {
 			const keyword = `${word}-${now}`;
@@ -48,7 +50,35 @@ describe("Search-by-keywords feature", () => {
 		cy.get("@quotesList")
 			.find("figcaption")
 			.each(element => {
-				cy.wrap(element).invoke("text").should("equal", testAuthor);
+				cy.wrap(element).should("have.text", testAuthor);
 			});
+	});
+
+	it("resets the search field and results when the user saves a new quote", () => {
+		const now = Date.now();
+		const searchTestContent = `Cypress search [${now}]`;
+
+		cy.get("@quoteForm").find("textarea").type(searchTestContent);
+		cy.get("@quoteForm").find("button[type='submit']").click();
+		cy.wait(["@saveQuote", "@getQuotes"]);
+
+		cy.wait(2000); // Gives React the time to update the UI.
+		cy.get("input[name='searchKeywords']").as("searchField").should("exist");
+		cy.get("[data-testid='quotes-list']").as("quotesList").should("exist");
+
+		cy.get("@searchField").type(now);
+		cy.wait(5000);
+		cy.get("@quotesList").find("blockquote").its("length").should("equal", 1);
+		cy.get("@quotesList").find("blockquote").should("have.text", searchTestContent);
+
+		const resetTestContent = `Cypress reset search [${Date.now()}]`;
+
+		cy.get("@quoteForm").find("textarea").focus().clear().type(resetTestContent);
+		cy.get("@quoteForm").find("button[type='submit']").click();
+		cy.wait(["@saveQuote", "@getQuotes"]);
+
+		cy.wait(2000); // Gives React the time to update the UI.
+		cy.get("@searchField").should("have.value", "");
+		cy.get("@quotesList").find("blockquote").first().should("have.text", resetTestContent);
 	});
 });
