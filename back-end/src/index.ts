@@ -23,7 +23,7 @@ const app = express();
 app.use(
 	cors({
 		credentials: true,
-		origin: process.env.SPA_HOST || undefined,
+		origin: process.env.NODE_ENV === "development" ? process.env.SPA_HOST : undefined,
 	})
 );
 app.use(helmet());
