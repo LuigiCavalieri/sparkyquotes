@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import classNames from "classnames";
 import { TextFieldProps } from "./TextField.types";
 import { toTitleCase } from "../../utils/strings";
