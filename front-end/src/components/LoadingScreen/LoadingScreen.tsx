@@ -7,7 +7,7 @@ export default function LoadingScreen() {
 
 	useEffect(() => {
 		setTimer(() => setShowScreen(true), 500);
-	}, []);
+	}, [setTimer]);
 
 	if (!showScreen) {
 		return null;

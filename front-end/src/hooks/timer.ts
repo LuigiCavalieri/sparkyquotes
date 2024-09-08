@@ -26,7 +26,7 @@ export function useTimer() {
 
 	useEffect(() => {
 		return clearTimer;
-	}, []);
+	}, [clearTimer]);
 
 	return { setTimer, clearTimer };
 }
