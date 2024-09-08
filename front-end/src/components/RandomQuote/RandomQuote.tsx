@@ -1,19 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import Card from "../Card/Card";
 import { useQuotes, useSaveQuote } from "../../hooks/quotes";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import RandomQuoteContent from "./RandomQuoteContent/RandomQuoteContent";
 import RandomQuoteDismissButton from "./RandomQuoteDismissButton/RandomQuoteDismissButton";
 import appConfig from "../../config/appConfig";
+import { useTimer } from "../../hooks/timer";
 
 export default function RandomQuote() {
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const { setTimer, clearTimer } = useTimer();
 	const [showOptimisticSaved, setShowOptimisticSaved] = useState(false);
 
 	const { randomQuoteQueryState } = useQuotes();
 	const { isError: isMutationError, mutate } = useSaveQuote({
 		onError: () => {
-			maybeClearTimer();
+			clearTimer();
 			setShowOptimisticSaved(false);
 		},
 	});
@@ -25,9 +26,7 @@ export default function RandomQuote() {
 
 		setShowOptimisticSaved(true);
 
-		timerRef.current = setTimeout(() => {
-			timerRef.current = null;
-
+		setTimer(() => {
 			setShowOptimisticSaved(false);
 		}, appConfig.feedbackTimeout);
 	}, [randomQuoteQueryState.data]);
@@ -36,21 +35,9 @@ export default function RandomQuote() {
 		randomQuoteQueryState.updateEnabled(false);
 	}, [randomQuoteQueryState]);
 
-	useEffect(() => {
-		return maybeClearTimer;
-	}, []);
-
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		location.reload();
-	};
-
-	const maybeClearTimer = () => {
-		if (timerRef.current) {
-			clearTimeout(timerRef.current);
-
-			timerRef.current = null;
-		}
 	};
 
 	if (!randomQuoteQueryState.isEnabled) {

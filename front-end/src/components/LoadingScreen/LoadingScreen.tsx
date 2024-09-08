@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTimer } from "../../hooks/timer";
 
 export default function LoadingScreen() {
+	const { setTimer } = useTimer();
 	const [showScreen, setShowScreen] = useState(false);
 
 	useEffect(() => {
-		const timer = setTimeout(() => setShowScreen(true), 500);
-
-		return () => {
-			clearTimeout(timer);
-		};
+		setTimer(() => setShowScreen(true), 500);
 	}, []);
 
 	if (!showScreen) {

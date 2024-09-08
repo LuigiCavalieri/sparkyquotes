@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import { useQuotes } from "../../hooks/quotes";
 import Card from "../Card/Card";
@@ -10,13 +10,14 @@ import { CopyStatus } from "../../constants";
 import { Quote } from "../../types/quotes";
 import TextField from "../TextField/TextField";
 import { useDebounceAndThrottle } from "../../hooks/debounce-throttle";
+import { useTimer } from "../../hooks/timer";
 
 export default function QuotesList() {
 	const { debounceAndThrottle } = useDebounceAndThrottle();
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
-	const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const { setTimer: setCopiedTimer, clearTimer: clearCopiedTimer } = useTimer();
+	const { setTimer: setSearchTimer, clearTimer: clearSearchTimer } = useTimer();
 	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const [searchString, setSearchString] = useState("");
@@ -39,11 +40,9 @@ export default function QuotesList() {
 
 			setIsSearching(true);
 			debounceAndThrottle(triggerSearch, 1000);
-			maybeClearSearchTimer();
+			clearSearchTimer();
 
-			searchTimerRef.current = setTimeout(() => {
-				searchTimerRef.current = null;
-
+			setSearchTimer(() => {
 				setIsSearching(false);
 			}, 1000);
 		},
@@ -66,21 +65,12 @@ export default function QuotesList() {
 		} catch {
 			setCopyStatus(CopyStatus.error);
 		} finally {
-			maybeClearCopiedTimer();
+			clearCopiedTimer();
 		}
 
-		copiedTimerRef.current = setTimeout(() => {
-			copiedTimerRef.current = null;
-
+		setCopiedTimer(() => {
 			setCopyStatus(CopyStatus.waiting);
 		}, appConfig.feedbackTimeout);
-	}, []);
-
-	useEffect(() => {
-		return () => {
-			maybeClearSearchTimer();
-			maybeClearCopiedTimer();
-		};
 	}, []);
 
 	useEffect(() => {
@@ -94,18 +84,6 @@ export default function QuotesList() {
 			setSearchString("");
 		}
 	}, [mainQueryState.searchFilters.keywords]);
-
-	const maybeClearSearchTimer = () => {
-		if (searchTimerRef.current) {
-			clearTimeout(searchTimerRef.current);
-		}
-	};
-
-	const maybeClearCopiedTimer = () => {
-		if (copiedTimerRef.current) {
-			clearTimeout(copiedTimerRef.current);
-		}
-	};
 
 	const onClickRefresh = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
