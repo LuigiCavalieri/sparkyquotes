@@ -4,18 +4,6 @@ export function useTimer() {
 	const callbackRef = useRef<(() => void) | null>(null);
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const setTimer = useCallback((callback: () => void, delay: number) => {
-		callbackRef.current = callback;
-
-		timerRef.current = setTimeout(() => {
-			timerRef.current = null;
-
-			if (typeof callbackRef.current === "function") {
-				callbackRef.current();
-			}
-		}, Number(delay));
-	}, []);
-
 	const clearTimer = useCallback(() => {
 		if (timerRef.current) {
 			clearTimeout(timerRef.current);
@@ -23,6 +11,22 @@ export function useTimer() {
 			timerRef.current = null;
 		}
 	}, []);
+
+	const setTimer = useCallback(
+		(callback: () => void, delay: number) => {
+			clearTimer();
+
+			callbackRef.current = callback;
+			timerRef.current = setTimeout(() => {
+				timerRef.current = null;
+
+				if (typeof callbackRef.current === "function") {
+					callbackRef.current();
+				}
+			}, Number(delay));
+		},
+		[clearTimer]
+	);
 
 	useEffect(() => {
 		return clearTimer;

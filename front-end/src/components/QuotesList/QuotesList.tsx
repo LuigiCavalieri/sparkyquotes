@@ -16,8 +16,8 @@ export default function QuotesList() {
 	const { debounceAndThrottle } = useDebounceAndThrottle();
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
-	const { setTimer: setCopiedTimer, clearTimer: clearCopiedTimer } = useTimer();
-	const { setTimer: setSearchTimer, clearTimer: clearSearchTimer } = useTimer();
+	const { setTimer: setCopiedTimer } = useTimer();
+	const { setTimer: setSearchTimer } = useTimer();
 	const [copyStatus, setCopyStatus] = useState(CopyStatus.waiting);
 	const [copiedQuoteId, setCopiedQuoteId] = useState<string | null>(null);
 	const [searchString, setSearchString] = useState("");
@@ -40,13 +40,12 @@ export default function QuotesList() {
 
 			setIsSearching(true);
 			debounceAndThrottle(triggerSearch, 1000);
-			clearSearchTimer();
 
 			setSearchTimer(() => {
 				setIsSearching(false);
 			}, 1000);
 		},
-		[refreshQuotes, debounceAndThrottle, clearSearchTimer, setSearchTimer]
+		[refreshQuotes, debounceAndThrottle, setSearchTimer]
 	);
 
 	const copyToClipboard = useCallback(
@@ -65,15 +64,13 @@ export default function QuotesList() {
 				setCopyStatus(CopyStatus.copied);
 			} catch {
 				setCopyStatus(CopyStatus.error);
-			} finally {
-				clearCopiedTimer();
 			}
 
 			setCopiedTimer(() => {
 				setCopyStatus(CopyStatus.waiting);
 			}, appConfig.feedbackTimeout);
 		},
-		[setCopiedTimer, clearCopiedTimer]
+		[setCopiedTimer]
 	);
 
 	useEffect(() => {
