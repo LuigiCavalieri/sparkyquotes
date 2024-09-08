@@ -39,7 +39,7 @@ describe("Search-by-keywords feature", () => {
 		cy.get("[data-testid='quotes-list']").as("quotesList").should("exist");
 
 		cy.get("@searchField").type([keywords[1], keywords[2], `three-${now}`].join(" "));
-		cy.wait(5000);
+		cy.wait(2000);
 		cy.get("@quotesList").find("blockquote").its("length").should("equal", 2);
 		cy.get("@quotesList")
 			.find("blockquote")
@@ -48,7 +48,7 @@ describe("Search-by-keywords feature", () => {
 			});
 
 		cy.get("@searchField").focus().clear().type(testAuthor);
-		cy.wait(5000);
+		cy.wait(2000);
 		cy.get("@quotesList").find("blockquote").its("length").should("equal", quotes.length);
 		cy.get("@quotesList")
 			.find("figcaption")
@@ -70,7 +70,7 @@ describe("Search-by-keywords feature", () => {
 		cy.get("[data-testid='quotes-list']").as("quotesList").should("exist");
 
 		cy.get("@searchField").type(now);
-		cy.wait(5000);
+		cy.wait(2000);
 		cy.get("@quotesList").find("blockquote").its("length").should("equal", 1);
 		cy.get("@quotesList").find("blockquote").should("have.text", searchTestContent);
 
@@ -90,7 +90,7 @@ describe("Search-by-keywords feature", () => {
 		cy.get("[data-testid='quotes-list']").as("quotesList").should("exist");
 
 		cy.get("@searchField").type(defaultAuthorName);
-		cy.wait(5000);
+		cy.wait(2000);
 		cy.get("@quotesList").find("figcaption").first().should("have.text", defaultAuthorName);
 	});
 });

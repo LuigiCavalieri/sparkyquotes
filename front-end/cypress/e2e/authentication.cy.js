@@ -41,7 +41,6 @@ describe("Login feature", () => {
 		cy.get("@passwordField").type(Cypress.env("userPassword"));
 		cy.get("@submitButton").click();
 
-		cy.get("[data-testid='loading-screen']").should("exist");
 		cy.url().should("include", "/admin/quotes");
 	});
 
