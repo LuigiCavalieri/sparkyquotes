@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState, FormEvent, useEffect } from "react";
+import { ChangeEvent, useRef, useState, FormEvent, useCallback } from "react";
 import appConfig from "../../config/appConfig";
 import { useSaveQuote } from "../../hooks/quotes";
 import SubmitButton from "../SubmitButton/SubmitButton";
@@ -6,62 +6,54 @@ import TextField from "../TextField/TextField";
 import Card from "../Card/Card";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { QuoteWithoutServerGenFields } from "../../types/quotes";
+import { useTimer } from "../../hooks/timer";
 
 export default function QuoteForm() {
-	const formRef = useRef<HTMLFormElement | null>(null);
-	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const { setTimer, clearTimer } = useTimer();
+	const formValuesToRestoreRef = useRef(initFormValues);
 	const [submitEnabled, setSubmitEnabled] = useState(false);
-	const [showSaved, setShowSaved] = useState(false);
+	const [showOptimisticSaved, setShowOptimisticSaved] = useState(false);
+	const [formValues, setFormValues] = useState(initFormValues);
 
-	const { isError, isLoading, error, mutate } = useSaveQuote({
-		onSuccess: () => {
-			if (formRef.current) {
-				formRef.current.reset();
-				showFeedback();
-			}
-		},
+	const { isError, error, mutate } = useSaveQuote({
 		onError: () => {
+			clearTimer();
+			setShowOptimisticSaved(false);
+			setFormValues(formValuesToRestoreRef.current);
 			setSubmitEnabled(true);
 		},
 	});
 
-	useEffect(() => {
-		return () => {
-			if (timerRef.current) {
-				clearTimeout(timerRef.current);
-			}
-		};
-	}, []);
-
-	const showFeedback = () => {
-		setShowSaved(true);
-
-		timerRef.current = setTimeout(() => {
-			timerRef.current = null;
-
-			setShowSaved(false);
-		}, appConfig.feedbackTimeout);
-	};
-
 	const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (!formRef.current) {
-			return;
-		}
+		formValuesToRestoreRef.current = formValues;
 
-		const formData = new FormData(formRef.current);
-		const fieldsValue = Object.fromEntries(formData.entries()) as QuoteWithoutServerGenFields;
-
+		setFormValues(initFormValues);
 		setSubmitEnabled(false);
-		mutate(fieldsValue);
+		setShowOptimisticSaved(true);
+		mutate(formValues);
+
+		setTimer(() => {
+			setShowOptimisticSaved(false);
+		}, appConfig.feedbackTimeout);
 	};
 
-	const handleOnChangeTextarea = (event: ChangeEvent<HTMLTextAreaElement>) => {
-		const value = event.target.value.trim();
+	const handleOnChange = useCallback(
+		(event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+			const value = event.target.value;
 
-		setSubmitEnabled(Boolean(value));
-	};
+			setFormValues({
+				...formValues,
+				[event.target.name]: value,
+			});
+
+			if (event.target.tagName === "TEXTAREA") {
+				setSubmitEnabled(Boolean(value.trim()));
+			}
+		},
+		[formValues]
+	);
 
 	return (
 		<Card>
@@ -70,34 +62,34 @@ export default function QuoteForm() {
 					{error.message}
 				</ErrorMessage>
 			)}
-			<form
-				data-testid="quote-form"
-				className="grid gap-5 py-2"
-				ref={formRef}
-				onSubmit={handleOnSubmit}
-			>
+			<form data-testid="quote-form" className="grid gap-5 py-2" onSubmit={handleOnSubmit}>
 				<textarea
 					required
 					className="leading-6 outline-none p-2 border rounded-sm border-slate-300 h-40 resize-none disabled:text-slate-400 focus:border-sky-500"
 					name="content"
-					disabled={isLoading}
 					placeholder="Type in the quote you want to save"
-					onChange={handleOnChangeTextarea}
+					value={formValues.content}
+					onChange={handleOnChange}
 				/>
 				<TextField
 					type="name"
 					name="author"
 					placeholder="by 'anonymous'"
-					disabled={isLoading}
 					maxLength={appConfig.authorNameMaxLength}
+					value={formValues.author!}
+					onChange={handleOnChange}
 				/>
 				<div className="flex items-center justify-end gap-2">
-					{showSaved && <span className="font-medium text-green-700 text-sm">Saved!</span>}
-					<SubmitButton disabled={!submitEnabled || isLoading} className="w-1/4">
-						{isLoading ? "Saving..." : "Save"}
+					{showOptimisticSaved && (
+						<span className="font-medium text-green-700 text-sm">Saved!</span>
+					)}
+					<SubmitButton disabled={!submitEnabled} className="w-1/4">
+						Save
 					</SubmitButton>
 				</div>
 			</form>
 		</Card>
 	);
 }
+
+const initFormValues: QuoteWithoutServerGenFields = { content: "", author: "" };
