@@ -1,10 +1,11 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import classNames from "classnames";
 import { TextFieldProps } from "./TextField.types";
 import { toTitleCase } from "../../utils/strings";
 import { validateInput } from "./functions";
 import EyeSlashIcon from "../Heroicons/EyeSlash";
 import EyeIcon from "../Heroicons/EyeIcon";
+import { useTimer } from "../../hooks/timer";
 
 export default function TextField({
 	required,
@@ -22,7 +23,7 @@ export default function TextField({
 	onValidated,
 	onError,
 }: TextFieldProps) {
-	const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const { setTimer: setDebounceTimer, clearTimer: clearDebounceTimer } = useTimer();
 	const [isActive, setIsActive] = useState(false);
 	const [passwordReadable, setPasswordReadable] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -34,11 +35,7 @@ export default function TextField({
 	const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const trimmedValue = event.target.value.trim();
 
-		if (debounceTimerRef.current) {
-			clearTimeout(debounceTimerRef.current);
-
-			debounceTimerRef.current = null;
-		}
+		clearDebounceTimer();
 
 		if (required && !trimmedValue) {
 			triggerOnChange(event);
@@ -62,9 +59,7 @@ export default function TextField({
 				setError(null);
 			}
 		} else {
-			debounceTimerRef.current = setTimeout(() => {
-				debounceTimerRef.current = null;
-
+			setDebounceTimer(() => {
 				triggerOnValidated(event);
 			}, 300);
 		}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 
-export const useDebounceAndThrottle = () => {
+export function useDebounceAndThrottle() {
 	const lastCallTimeRef = useRef<number>(0);
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const callbackRef = useRef<(() => void) | null>(null);
@@ -44,4 +44,4 @@ export const useDebounceAndThrottle = () => {
 	}, []);
 
 	return { debounceAndThrottle };
-};
+}
