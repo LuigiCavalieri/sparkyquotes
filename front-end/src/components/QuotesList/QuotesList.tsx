@@ -46,32 +46,35 @@ export default function QuotesList() {
 				setIsSearching(false);
 			}, 1000);
 		},
-		[refreshQuotes, debounceAndThrottle]
+		[refreshQuotes, debounceAndThrottle, clearSearchTimer, setSearchTimer]
 	);
 
-	const copyToClipboard = useCallback(async (quote: Quote) => {
-		setCopiedQuoteId(quote.id);
+	const copyToClipboard = useCallback(
+		async (quote: Quote) => {
+			setCopiedQuoteId(quote.id);
 
-		try {
-			if (!("clipboard" in navigator)) {
-				throw new Error();
+			try {
+				if (!("clipboard" in navigator)) {
+					throw new Error();
+				}
+
+				const author = quote.author || appConfig.authorDefaultName;
+
+				await navigator.clipboard.writeText(`${quote.content}\n( ${author} )`);
+
+				setCopyStatus(CopyStatus.copied);
+			} catch {
+				setCopyStatus(CopyStatus.error);
+			} finally {
+				clearCopiedTimer();
 			}
 
-			const author = quote.author || appConfig.authorDefaultName;
-
-			await navigator.clipboard.writeText(`${quote.content}\n( ${author} )`);
-
-			setCopyStatus(CopyStatus.copied);
-		} catch {
-			setCopyStatus(CopyStatus.error);
-		} finally {
-			clearCopiedTimer();
-		}
-
-		setCopiedTimer(() => {
-			setCopyStatus(CopyStatus.waiting);
-		}, appConfig.feedbackTimeout);
-	}, []);
+			setCopiedTimer(() => {
+				setCopyStatus(CopyStatus.waiting);
+			}, appConfig.feedbackTimeout);
+		},
+		[setCopiedTimer, clearCopiedTimer]
+	);
 
 	useEffect(() => {
 		if (quotes.length && !showSearchField) {

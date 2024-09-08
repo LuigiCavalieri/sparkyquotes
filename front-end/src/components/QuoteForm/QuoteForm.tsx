@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState, FormEvent, useCallback } from "react";
+import { ChangeEvent, useState, FormEvent, useCallback } from "react";
 import appConfig from "../../config/appConfig";
 import { useSaveQuote } from "../../hooks/quotes";
 import SubmitButton from "../SubmitButton/SubmitButton";
@@ -10,24 +10,21 @@ import { useTimer } from "../../hooks/timer";
 
 export default function QuoteForm() {
 	const { setTimer, clearTimer } = useTimer();
-	const formValuesToRestoreRef = useRef(initFormValues);
 	const [submitEnabled, setSubmitEnabled] = useState(false);
 	const [showOptimisticSaved, setShowOptimisticSaved] = useState(false);
 	const [formValues, setFormValues] = useState(initFormValues);
 
 	const { isError, error, mutate } = useSaveQuote({
-		onError: () => {
+		onError: (_error, variables) => {
 			clearTimer();
 			setShowOptimisticSaved(false);
-			setFormValues(formValuesToRestoreRef.current);
+			setFormValues(variables);
 			setSubmitEnabled(true);
 		},
 	});
 
 	const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
-		formValuesToRestoreRef.current = formValues;
 
 		setFormValues(initFormValues);
 		setSubmitEnabled(false);
