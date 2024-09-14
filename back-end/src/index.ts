@@ -1,5 +1,5 @@
 import "./types/express-auth";
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -12,8 +12,6 @@ import { fakeDelayMiddleware } from "./middlewares/fakeDelay";
 import { errorHandlerMiddleware } from "./middlewares/errorHandler";
 import authRouter from "./api-routes/auth";
 import quotesRouter from "./api-routes/quotes";
-
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const apiBasePath = "/api/v1";
 const port = process.env.PORT || 4001;
