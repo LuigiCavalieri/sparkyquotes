@@ -10,7 +10,7 @@ export const validate = (validations: ValidationChain[]) => {
 
 			if (!result.isEmpty()) {
 				const error = result.array()[0];
-				/* eslint-disable  @typescript-eslint/no-explicit-any */
+				/* eslint-disable @typescript-eslint/no-explicit-any */
 				const fieldName = (error as any)?.path || "";
 				const errorMsg = (fieldName && `${fieldName}: `) + error.msg;
 
