@@ -43,7 +43,7 @@ export const sendAccountActivationEmail = async ({
 
 		Promise.resolve(result);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 
 		return Promise.reject(createHttpError(500, "Failed to send activation email."));
 	}

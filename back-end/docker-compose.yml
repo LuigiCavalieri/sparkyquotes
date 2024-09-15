@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - 5401:5432
+    env_file:
+      - .env.development
+    volumes:
+      - "./db-data:/var/lib/postgresql/data"
+
+  testdb:
+    image: postgres:15-alpine
+    ports:
+      - 5400:5432
+    env_file:
+      - .env.development
+    volumes:
+      - "./testdb-data:/var/lib/postgresql/data"
+
+  app:
+    depends_on:
+      - db
+      - testdb
+    image: sparkyquotes-be
+    env_file:
+      - .env.development
+    environment:
+      - PORT=2024
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    restart: unless-stopped
+    volumes:
+      - "./:/usr/app-be"
+      - "/usr/app-be/node_modules/"
+    ports:
+      - 2024:2024
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        npm run migrate
+        npm run dev
