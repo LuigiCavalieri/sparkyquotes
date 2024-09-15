@@ -28,8 +28,9 @@ export default function RandomQuote() {
 
 		setTimer(() => {
 			setShowOptimisticSaved(false);
+			randomQuoteQueryState.refetch();
 		}, appConfig.feedbackTimeout);
-	}, [mutate, setTimer, randomQuoteQueryState.data]);
+	}, [mutate, setTimer, randomQuoteQueryState]);
 
 	const handleOnClickDismiss = useCallback(() => {
 		randomQuoteQueryState.updateEnabled(false);
@@ -68,6 +69,7 @@ export default function RandomQuote() {
 				<RandomQuoteContent
 					quote={randomQuoteQueryState.data}
 					showSaved={showOptimisticSaved}
+					disabled={randomQuoteQueryState.isRefetching}
 					onClickSave={handleOnClickSave}
 					onClickDismiss={handleOnClickDismiss}
 				/>

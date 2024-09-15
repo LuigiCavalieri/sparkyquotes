@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 
 interface DB {
-	pool: Pool | null;
+	pool: Pool;
 	getPool: () => Pool | null;
 	connect: () => void;
 	close: () => void;
@@ -32,15 +32,17 @@ export const db: DB = {
 		try {
 			this.pool = new Pool({
 				host: process.env.POSTGRES_HOST || "",
-				database: process.env.POSTGRES_DATABASE || "",
+				database: process.env.POSTGRES_DB || "",
 				user: process.env.POSTGRES_USER || "",
 				password: process.env.POSTGRES_PASSWORD || "",
 				idleTimeoutMillis: 30000,
 			});
 
+			await this.pool.connect();
+
 			console.log("DB connected to host.");
 		} catch (error) {
-			console.log("DB connection error: " + error);
+			console.log("DB connection error: " + error.message);
 			process.exit(1);
 		}
 	},

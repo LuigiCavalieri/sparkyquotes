@@ -7,6 +7,7 @@ import RandomQuoteDismissButton from "../RandomQuoteDismissButton/RandomQuoteDis
 export default function RandomQuoteContent({
 	quote,
 	showSaved,
+	disabled,
 	onClickDismiss,
 	onClickSave,
 }: RandomQuoteContentProps) {
@@ -22,13 +23,17 @@ export default function RandomQuoteContent({
 					</em>
 				</h3>
 				<div className="flex items-center gap-2">
-					<RandomQuoteDismissButton onClick={onClickDismiss} />
+					<RandomQuoteDismissButton disabled={disabled} onClick={onClickDismiss} />
 					<span className="text-gray-300">|</span>
 					<div className="text-sm font-medium sm:leading-7">
 						{showSaved ? (
 							<span className="text-green-700">Saved!</span>
 						) : (
-							<TextButton testid="random-quote-save-button" onClick={onClickSave}>
+							<TextButton
+								testid="random-quote-save-button"
+								disabled={disabled}
+								onClick={onClickSave}
+							>
 								Save
 							</TextButton>
 						)}
@@ -39,13 +44,15 @@ export default function RandomQuoteContent({
 				data-testid="random-quote-content"
 				className={classNames("mt-4 sm:block quotes", {
 					hidden: hiddenOnMobile,
+					"opacity-50": disabled,
 				})}
 			>
 				{quote.content}
 			</blockquote>
 			<TextButton
-				onClick={() => setHiddenOnMobile(value => !value)}
+				disabled={disabled}
 				className={classNames("text-sm sm:hidden", { "inline-block": hiddenOnMobile })}
+				onClick={() => setHiddenOnMobile(value => !value)}
 			>
 				{hiddenOnMobile ? "+ show" : "- hide"}
 			</TextButton>
