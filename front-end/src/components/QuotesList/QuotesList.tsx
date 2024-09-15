@@ -9,11 +9,11 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { CopyStatus } from "../../constants";
 import { Quote } from "../../types/quotes";
 import TextField from "../TextField/TextField";
-import { useDebounceAndThrottle } from "../../hooks/debounce-throttle";
+import { useThrottle } from "../../hooks/throttle";
 import { useTimer } from "../../hooks/timer";
 
 export default function QuotesList() {
-	const { debounceAndThrottle } = useDebounceAndThrottle();
+	const { throttle } = useThrottle();
 	const { quotes, mainQueryState, pagination, refreshQuotes } = useQuotes();
 
 	const { setTimer: setCopiedTimer } = useTimer();
@@ -39,13 +39,13 @@ export default function QuotesList() {
 			}
 
 			setIsSearching(true);
-			debounceAndThrottle(triggerSearch, 1000);
+			throttle(triggerSearch, 1000);
 
 			setSearchTimer(() => {
 				setIsSearching(false);
 			}, 1000);
 		},
-		[refreshQuotes, debounceAndThrottle, setSearchTimer]
+		[refreshQuotes, throttle, setSearchTimer]
 	);
 
 	const copyToClipboard = useCallback(
